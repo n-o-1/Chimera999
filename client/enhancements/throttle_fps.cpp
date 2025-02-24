@@ -6,7 +6,7 @@
 static LARGE_INTEGER prev_time;
 static double throttle_fps = 0.0;
 
-static void after_frame() noexcept {
+static void on_frame() noexcept {
     auto seconds_per_frame = 1.0 / throttle_fps;
     do {
         LARGE_INTEGER now_time;
@@ -36,10 +36,10 @@ ChimeraCommandError throttle_fps_command(size_t argc, const char **argv) noexcep
             }
 
             if(new_value == 0.0) {
-                remove_frame_event(after_frame);
+                remove_frame_event(on_frame);
             }
             else {
-                add_frame_event(after_frame, EVENT_PRIORITY_FINAL);
+                add_frame_event(on_frame, EVENT_PRIORITY_FINAL);
                 QueryPerformanceCounter(&prev_time);
             }
             throttle_fps = new_value;
