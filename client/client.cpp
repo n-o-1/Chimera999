@@ -42,6 +42,8 @@
 #include "fix/widescreen_fix.h"
 #include "fix/block_camera_shake_fix.h"
 
+#include "hac2/hac2_help.h"
+
 #include "halo_data/chat.h"
 #include "halo_data/keyboard.h"
 #include "halo_data/map.h"
@@ -179,7 +181,7 @@ void initialize_client() noexcept {
     , 0, 0, true);
 
     (*commands).emplace_back("chimera_verbose_init", verbose_init_command, nullptr,
-        "Get or set whethe chimerainit.txt or chimeraname.txt commands should output messages.\n\n"
+        "Get or set whether chimerainit.txt or chimeraname.txt commands should output messages.\n\n"
         "Syntax:\n"
         "  - chimera_verbose_init"
     , 0, 1, true);
@@ -218,6 +220,147 @@ void initialize_client() noexcept {
         "Syntax:\n"
         "  - chimera_wireframe [true/false]"
     , 0, 1, find_debug_signatures(), false);
+
+    // HAC2
+    (*commands).emplace_back("chimera_hac2", hac2_command, "hac2",
+         "Display all available HAC2 commands.\n\n"
+         "Syntax:\n"
+         "  - chimera_hac2"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_bookmarking",hac2_bookmarking_command, "hac2",
+         "Display all available HAC2 bookmarking binds.\n"
+         "Options:\n"
+         "  0: Add current server to your bookmarkers / favorites list.\n"
+         "  1: View your bookmarkers / favorites list.\n"
+         "  2: Join bookmarked server.\n"
+         "  3: Delete bookmarked server.\n"
+         "  4: Selects bookmarks in the range 11-20 (example, ctrl + alt + 4 will join bookmark 14).\n"
+         "  5: Reconnect to last server.\n\n"
+         "Syntax:\n"
+        "  - F4/F5/ALT + Bookmark #/DEL + Bookmark #/CTRL + ALT/DEL + Bookmark #/ CTRL + L"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_binds", hac2_binds_command, "hac2",
+         "Display other available HAC2 binds.\n"
+         "Options:\n"
+         "  0: Change your field of view using your mouse up and down.\n"
+         "  Press F6 again to lock new FOV.\n"
+         "  1: Resets your FOV to its default (70)\n"
+         "  2: Set HUD color. This will cycle through all of the HUDs.\n"
+         "  This is controlled with your mouse.\n"
+         "  3: Resets HUD colors.\n"
+         "  4: Enable/disable Sightjacker.\n"
+         "  You can switch between player via -/+, or your mouse scroll wheel.\n\n"
+         "Syntax:\n"
+         "  - F6/LSHIFT + F6/F9/LSHIFT + F9/F7"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_copy", hac2_copy_command, "hac2",
+         "Copies the information of a bookmarked server.\n"
+         "If no number is provided it copies information of the current server.\n\n"
+         "Syntax:\n"
+         "  - copy [bookmark #]"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_optic", hac2_optic_commands, "hac2",
+         "Load and unload an optic medal pack.\n"
+         "Options:\n"
+         "  0: Display all available medal packs.\n"
+         "  1: Load an optic medal pack.\n"
+         "  2: Stop the optic medal system. You do not need to use unload to load another pack.\n\n"
+         "Syntax:\n"
+         "  - optic/optic_load [pack_name]/optic_unload"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_timer", hac2_timer_commands, "hac2",
+         "Enables or disables power-up timers (On supported maps.)\n"
+         "Options:\n"
+         "  0: Enables power-up timers (on supported maps.)\n"
+         "  1: Disables the power-up timers.\n"
+         "  2: Resets the power-up timers.\n"
+         "  3: Starts the power-up timers (use when map loads.)\n"
+         "  4: Stops the power-up timers.\n"
+         "  5: Broadcasts the power-up timers to the team chat.\n\n"
+         "Syntax:\n"
+         "  - timer_enable/timer_disable/timer_reset/timer_start/timer_stop/timer_broadcast"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_chat", hac2_chat_commands, "hac2",
+         "Hac2 chat options.\n"
+         "Options:\n"
+         "  0: Redirect kill feed to the upper left part of the hud.\n"
+         "  1: Turn HAC2's custom chat on/off. The default is off.\n"
+         "  2: Turn HAC2's classic chat on/off. The default is off.\n"
+         "  (Requires custom_chat to be enabled.)\n"
+         "  3: Edit the number of lines displayed in custom and classic chat modes.\n"
+         "  4: Edit the font size of HAC2's custom and classic chat.\n"
+         "  5: Edit the font of HAC2's classic chat.\n\n"
+         "Syntax:\n"
+         "  - redirect_kill_feed [0/1]/custom_chat [0/1]/classic_chat [0/1]\n"
+         "  - line_limit [lines]/font_size [size]/font [font]"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_fov", hac2_fov_command, "hac2",
+         "Can be used as an alternative to F6 for setting fov.\n\n"
+         "Syntax:\n"
+         "  - fov [degrees]"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_widescreen", hac2_widescreen_command, "hac2",
+         "Turn HAC2's HUD scaling fix on/off. The default is on\n\n"
+         "Syntax:\n"
+         "  - hac_widescreen [0/1]"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_queue", hac2_queue_command, "hac2",
+         "Allows you to remain in the current game until a free slot is available\n"
+         "in the bookmarked server you attempted to join\n\n"
+         "Syntax:\n"
+         "  - play_during_queue [0/1]"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_devcam", hac2_devcam_command, "hac2",
+         "Toggles developer camera.\n\n"
+         "Syntax:\n"
+         "  - devcam [0/1]"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_draw", hac2_draw_command, "hac2",
+         "Distance is the number of world units to draw.\n"
+         "The default is 1024\n"
+         "HAC uses 4096 for maps that benefit from increased draw distances.\n\n"
+         "Syntax:\n"
+         "  - draw [distance]"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_recalculate", hac2_recalculate_command, "hac2",
+         "Recalculates the checksum for the given map.\n"
+         "This is aimed at map makers that don't want to use the cached checksum\n"
+         "during development given that the checksum will change with each compile.\n"
+         "Use quotation marks for map names with spaces.\n\n"
+         "Syntax:\n"
+         "  - recalculate [map_name]"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_objects", hac2_objects_command, "hac2",
+         "Sets the number of visible objects\n\n"
+         "Syntax:\n"
+         "  - visible_objects [count]"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_cache", hac2_cache_command, "hac2",
+         "Clear the entire checksum cache. There's no real reason to use this but it's there anyway.\n\n"
+         "Syntax:\n"
+         "  - hac_flush_cache"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_meme", hac2_meme_command, "hac2",
+         "lul.\n\n"
+         "Syntax:\n"
+         "  - hac_debug_bypass"
+    , 0, 0, true, false);
+
 
     // Enhancements
 
