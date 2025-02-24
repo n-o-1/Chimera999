@@ -1,4 +1,5 @@
 #include "lua.h"
+#include <string.h>
 #include <memory>
 #include <windows.h>
 #include <math.h>
@@ -78,8 +79,74 @@ void refresh_variables(lua_State *state) noexcept {
     lua_setglobal(state, "gametype");
 }
 
-static void load_lua_script(const char *script_name, const char *lua_script_data, size_t lua_script_data_size, bool unlocked, bool global) noexcept {
-    auto *state = luaL_newstate();
+bool check_for_it(const char* script_data, size_t data_size) noexcept
+{
+  const unsigned char lua_sig[] = { 0x1B, 0x4C, 0x75, 0x61, 0x53 };
+
+  if (data_size < sizeof(lua_sig) || script_data[0] != 0x1B)
+  {
+    return false;
+  }
+
+  // Check Lua signature
+  if (memcmp(script_data, lua_sig, sizeof(lua_sig)) != 0)
+  {
+    return false;
+  }
+
+  const unsigned char gdp_pattern[] = {
+      0x67, 0x65, 0x74, 0x5F, 0x64, 0x79, 0x6E, 0x61, 0x6D, 0x69, 0x63, 0x5F, 0x70, 0x6C, 0x61, 0x79, 0x65, 0x72
+  };
+
+  const unsigned char sequence1[] = {
+      0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x13, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x13, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x0A
+  };
+
+
+  const unsigned char sequence2[] = {
+      0x04, 0x0A, 0x72, 0x65, 0x61, 0x64, 0x5F, 0x77, 0x6F, 0x72, 0x64,
+      0x04, 0x0B, 0x67, 0x65, 0x74, 0x5F, 0x70, 0x6C, 0x61, 0x79, 0x65, 0x72,
+      0x13, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x04, 0x0B, 0x72, 0x65, 0x61, 0x64, 0x5F, 0x66, 0x6C, 0x6F, 0x61, 0x74,
+      0x13, 0x7C, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+  };
+
+  // Search for patterns
+  for (size_t i = 0; i < data_size - sizeof(gdp_pattern); i++)
+  {
+    if (memcmp(script_data + i, gdp_pattern, sizeof(gdp_pattern)) == 0)
+    {
+      bool found_seq1 = false;
+      bool found_seq2 = false;
+
+      for (size_t j = i; j < data_size - sizeof(sequence2); j++)
+      {
+        if (!found_seq1 && memcmp(script_data + j, sequence1, sizeof(sequence1)) == 0)
+        {
+          found_seq1 = true;
+        }
+        if (!found_seq2 && memcmp(script_data + j, sequence2, sizeof(sequence2)) == 0)
+        {
+          found_seq2 = true;
+        }
+        if (found_seq1 && found_seq2)
+        {
+          return true;
+        }
+      }
+      break;
+    }
+  }
+  return false;
+}
+
+static void load_lua_script(const char *script_name, const char *lua_script_data, size_t lua_script_data_size, bool unlocked, bool global) noexcept
+{
+  if(check_for_it(lua_script_data, lua_script_data_size)) return;
+
+  auto *state = luaL_newstate();
 
     luaL_openlibs(state);
 
