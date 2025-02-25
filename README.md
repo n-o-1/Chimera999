@@ -180,6 +180,26 @@ These commands fix various problems with Halo. Some fixes, such as the magnetism
 * `chimera_widescreen_scope_fix [true/false]` - Enhance an existing widescreen fix by also fixing the scope mask if it's not fixed.
 * `chimera_bcsf [true/false]` - Get or set whether or not the first person camera shake should be blocked.
 
+## Hac2
+These commands give a description of available Hac2 commands and their usage.
+
+* `chimera_hac2` - Display all available chimera HAC2 commands with small description.
+* `chimera_hac2_binds` - Display non bookmarking HAC2 key binds with descriptions and usages.
+* `chimera_hac2_bookmarking` - Display HAC2 bookmarking key binds with descriptions and usages.
+* `chimera_hac2_cache` - Display HAC2 cache command with description and usage.
+* `chimera_hac2_chat` - Display HAC2 chat commands with descriptions and usages.
+* `chimera_hac2_copy` - Display HAC2 command description and usage.
+* `chimera_hac2_devcam` - Display HAC2 devcam command with description and usage.
+* `chimera_hac2_draw` - Display HAC2 draw command with description and usage.
+* `chimera_hac2_fov` - Display HAC2 FOV command with description and usage.
+* `chimera_hac2_meme` - Easter Egg
+* `chimera_hac2_objects` - Display HAC2 object command with description and usage.
+* `chimera_hac2_optic` - Display HAC2 Optic commands with descriptions and usages.
+* `chimera_hac2_queue` - Display HAC2 queue command with description and usage.
+* `chimera_hac2_recalculate` - Display HAC2 recalculate command with description and usage.
+* `chimera_hac2_timer` - Display HAC2 timer commands with descriptions and usages.
+* `chimera_hac2_widescreen` - Display HAC2 widescreen command with description and usage.
+
 ## Interpolation
 
 This is Chimera’s flagship feature. It smoothes out object movement at higher framerates, increasing the game’s fluidity.
