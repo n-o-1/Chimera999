@@ -39,16 +39,20 @@ struct Event {
 template<typename T, typename ... Args>
 static inline void call_in_order(std::vector<Event<T>> events, Args&& ... args) {
     auto count = events.size();
-    for(typename std::vector<Event<T>>::size_type i=0;i<count;i++) {
+    for(typename std::vector<Event<T>>::size_type i=0;i<count;i++)
+    {
         if(events[i].priority == EVENT_PRIORITY_BEFORE) events[i].function(std::forward<Args>(args) ...);
     }
-    for(typename std::vector<Event<T>>::size_type i=0;i<count;i++) {
+    for(typename std::vector<Event<T>>::size_type i=0;i<count;i++)
+    {
         if(events[i].priority == EVENT_PRIORITY_DEFAULT) events[i].function(std::forward<Args>(args) ...);
     }
-    for(typename std::vector<Event<T>>::size_type i=0;i<count;i++) {
+    for(typename std::vector<Event<T>>::size_type i=0;i<count;i++)
+    {
         if(events[i].priority == EVENT_PRIORITY_AFTER) events[i].function(std::forward<Args>(args) ...);
     }
-    for(typename std::vector<Event<T>>::size_type i=0;i<count;i++) {
+    for(typename std::vector<Event<T>>::size_type i=0;i<count;i++)
+    {
         if(events[i].priority == EVENT_PRIORITY_FINAL) events[i].function(std::forward<Args>(args) ...);
     }
 }
@@ -59,16 +63,20 @@ static inline void call_in_order(std::vector<Event<T>> events, Args&& ... args) 
 template<typename T, typename ... Args>
 static inline void call_in_order_allow(std::vector<Event<T>> events, bool &allow, Args&& ... args) {
     auto count = events.size();
-    for(typename std::vector<Event<T>>::size_type i=0;i<count && allow;i++) {
+    for(typename std::vector<Event<T>>::size_type i=0;i<count && allow;i++)
+    {
         if(events[i].priority == EVENT_PRIORITY_BEFORE) allow = events[i].function(std::forward<Args>(args) ...);
     }
-    for(typename std::vector<Event<T>>::size_type i=0;i<count && allow;i++) {
+    for(typename std::vector<Event<T>>::size_type i=0;i<count && allow;i++)
+    {
         if(events[i].priority == EVENT_PRIORITY_DEFAULT) allow = events[i].function(std::forward<Args>(args) ...);
     }
-    for(typename std::vector<Event<T>>::size_type i=0;i<count && allow;i++) {
+    for(typename std::vector<Event<T>>::size_type i=0;i<count && allow;i++)
+    {
         if(events[i].priority == EVENT_PRIORITY_AFTER) allow = events[i].function(std::forward<Args>(args) ...);
     }
-    for(typename std::vector<Event<T>>::size_type i=0;i<count && allow;i++) {
+    for(typename std::vector<Event<T>>::size_type i=0;i<count && allow;i++)
+    {
         if(events[i].priority == EVENT_PRIORITY_FINAL) allow = events[i].function(std::forward<Args>(args) ...);
     }
 }
