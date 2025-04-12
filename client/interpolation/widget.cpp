@@ -51,9 +51,11 @@ static bool rollback_flag = false;
 
 void do_antenna_interpolation() noexcept {
     static auto *ant = reinterpret_cast<Antenna *>(get_antenna_table().first);
-    for(uint32_t i=0;i<MAX_ANTENNA;i++) {
+    for(uint32_t i=0;i<MAX_ANTENNA;i++)
+    {
         if(distance_squared(antenna_buffer_1[i].position, antenna_buffer_0[i].position) > 1) continue;
-        for(uint32_t j=0;j<21;j++) {
+        for(uint32_t j=0;j<21;j++)
+        {
             interpolate_vector_objects(antenna_buffer_1[i].vertices[j].position, antenna_buffer_0[i].vertices[j].position, ant[i].vertices[j].position, interpolation_tick_progress);
         }
     }
@@ -61,14 +63,17 @@ void do_antenna_interpolation() noexcept {
 void do_flag_interpolation() noexcept {
     static auto *flag = reinterpret_cast<Flag *>(get_flag_table().first);
     rollback_flag = false;
-    for(int i=0;i<MAX_FLAG;i++) {
+    for(int i=0;i<MAX_FLAG;i++)
+    {
         HaloObject o(flag[i].parent_object_id);
         char *odata = o.object_data();
-        if(odata && odata[0xB4] == 2) {
+        if(odata && odata[0xB4] == 2)
+        {
             if(distance_squared(flag_buffer_0[i].position, flag_buffer_1[i].position) > 4) continue;
             interpolate_vector_objects(flag_buffer_1[i].position, flag_buffer_0[i].position, flag[i].position, interpolation_tick_progress);
             rollback_flag = true;
-            for(uint32_t j=0;j<sizeof(flag_buffer_1[i].parts) / sizeof(flag_buffer_1[i].parts[0]);j++) {
+            for(uint32_t j=0;j<sizeof(flag_buffer_1[i].parts) / sizeof(flag_buffer_1[i].parts[0]);j++)
+            {
                 interpolate_vector_objects(flag_buffer_1[i].parts[j].position, flag_buffer_0[i].parts[j].position, flag[i].parts[j].position, interpolation_tick_progress);
             }
         }
@@ -85,9 +90,11 @@ void buffer_widgets_l() noexcept {
 
 void rollback_widget_interpolation() noexcept {
     static auto *flag = reinterpret_cast<Flag *>(get_flag_table().first);
-    for(int i=0;i<MAX_FLAG;i++) {
+    for(int i=0;i<MAX_FLAG;i++)
+    {
         flag[i].position = flag_buffer_0[i].position;
-        for(uint32_t j=0;j<sizeof(flag_buffer_1[i].parts) / sizeof(flag_buffer_1[i].parts[0]);j++) {
+        for(uint32_t j=0;j<sizeof(flag_buffer_1[i].parts) / sizeof(flag_buffer_1[i].parts[0]);j++)
+        {
             flag[i].parts[j].position = flag_buffer_0[i].parts[j].position;
         }
     }
