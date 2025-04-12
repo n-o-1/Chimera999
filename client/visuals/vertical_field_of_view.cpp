@@ -20,7 +20,8 @@ static void on_precamera() {
     auto &resolution = get_resolution();
 
     char *odata = HaloObject(HaloPlayer().object_id()).object_data();
-    if(odata) {
+    if(odata)
+    {
         HaloTag tag = HaloTag::from_id(*reinterpret_cast<HaloTagID *>(odata));
         *reinterpret_cast<float *>(tag.data + 0x1A0) = default_fov;
     }
@@ -31,19 +32,24 @@ static void on_precamera() {
 }
 
 ChimeraCommandError vfov_command(size_t argc, const char **argv) noexcept {
-    if(argc == 1) {
+    if(argc == 1)
+    {
         double new_value = strtod(argv[0], nullptr);
-        if(new_value == 0) {
+        if(new_value == 0)
+        {
             remove_precamera_event(on_precamera);
         }
-        else if(new_value == 1) {
+        else if(new_value == 1)
+        {
             new_value = standard_vfov;
         }
-        else if(new_value < 2 || new_value > 179) {
+        else if(new_value < 2 || new_value > 179)
+        {
             console_out_error("FOV must be between 2 and 179");
             return CHIMERA_COMMAND_ERROR_FAILURE;
         }
-        if(vfov == 0 && new_value != 0) {
+        if(vfov == 0 && new_value != 0)
+        {
             add_precamera_event(on_precamera, EVENT_PRIORITY_AFTER);
         }
         vfov = new_value;
