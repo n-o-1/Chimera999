@@ -8,7 +8,8 @@
 #include "../messaging/messaging.h"
 
 static void fix_hud() noexcept {
-    try {
+    try
+    {
         HaloTag &tag = HaloTag::lookup("unit_hud_interface", "ui\\hud\\cyborg_mp");
         auto &unhi = *reinterpret_cast<UnitHUDInterface *>(tag.data);
         assert_or_bail(unhi.anchor == ANCHOR_TOP_RIGHT);
@@ -29,7 +30,8 @@ static void fix_hud() noexcept {
         unhi.health_panel_background.position.scaling_flags.use_high_resolution_scale = 0;
         unhi.health_panel_meter.position.scaling_flags.use_high_resolution_scale = 0;
 
-        for(size_t i=0;i<unhi.auxiliary_hud_meters_count;i++) {
+        for(size_t i=0;i<unhi.auxiliary_hud_meters_count;i++)
+        {
             unhi.auxiliary_hud_meters[i].background.position.scaling_flags.use_high_resolution_scale = 0;
             unhi.auxiliary_hud_meters[i].meter.position.scaling_flags.use_high_resolution_scale = 0;
         }
@@ -39,14 +41,17 @@ static void fix_hud() noexcept {
 
 ChimeraCommandError split_screen_hud_command(size_t argc, const char **argv) noexcept {
     static auto active = false;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value != active) {
+        if(new_value != active)
+        {
             auto &ammo_counter_ss_sig = get_signature("ammo_counter_ss_sig");
             auto &hud_text_ss_sig = get_signature("hud_text_ss_sig");
             auto &split_screen_hud_ss_sig = get_signature("split_screen_hud_ss_sig");
             auto &hac2_workaround_ss_sig = get_signature("hac2_workaround_ss_sig");
-            if(new_value) {
+            if(new_value)
+            {
                 const short ammo_counter_mod[] = {-1,   0xB8, 0x02, 0x00};
                 const short hud_text_mod[] = {-1,   0xB8, 0x02, 0x00};
                 const short split_screen_hud_mod[] = {-1,   -1,   -1,   -1,   0x00};
@@ -55,8 +60,10 @@ ChimeraCommandError split_screen_hud_command(size_t argc, const char **argv) noe
                 write_code_s(split_screen_hud_ss_sig.address(), split_screen_hud_mod);
 
                 // workaround to keep Halo from crashing if HAC2 is present when split screen is enabled
-                if(hac2_present()) {
-                    static unsigned char bytecode[] = {
+                if(hac2_present())
+                {
+                    static unsigned char bytecode[] =
+                    {
                         // cmp eax, 0x00
                         0x83, 0xF8, 0x00,
 
@@ -89,12 +96,14 @@ ChimeraCommandError split_screen_hud_command(size_t argc, const char **argv) noe
                     console_out("Changes will fully take effect on next map load.");
                 }
             }
-            else {
+            else
+            {
                 ammo_counter_ss_sig.undo();
                 hud_text_ss_sig.undo();
                 split_screen_hud_ss_sig.undo();
 
-                if(hac2_present()) {
+                if(hac2_present())
+                {
                     hac2_workaround_ss_sig.undo();
                 }
 
