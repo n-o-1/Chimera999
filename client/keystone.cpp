@@ -6,7 +6,8 @@
 
 bool custom_keystone_in_use() noexcept {
     static int found = -1;
-    if(found == -1) {
+    if(found == -1)
+    {
         auto *module = GetModuleHandle("keystone.dll");
         if(!module) return false;
         auto **bird = reinterpret_cast<const char **>(GetProcAddress(module, "bird"));
@@ -17,8 +18,10 @@ bool custom_keystone_in_use() noexcept {
 
 static void handle_keystone_text(const short *text) {
     char b[128] = {};
-    for(int i=0;i<sizeof(b)-1;i++) {
-        switch(text[i]) {
+    for(int i=0;i<sizeof(b)-1;i++)
+    {
+        switch(text[i])
+        {
             case 0: break;
             default: b[i] = text[i];
         }
