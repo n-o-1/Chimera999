@@ -32,7 +32,8 @@ ChimeraCommandError ChimeraCommand::execute(int argc, const char **argv) const n
         return CHIMERA_COMMAND_ERROR_TOO_MANY_ARGUMENTS;
     else if(!this->i_supported)
         return CHIMERA_COMMAND_ERROR_UNSUPPORTED;
-    else {
+    else
+    {
         auto r = this->i_function(argc, argv);
         if(r == CHIMERA_COMMAND_ERROR_SUCCESS && this->i_saves && argc > 0)
             commit_command(this->name(), argc, argv);
@@ -53,7 +54,8 @@ ChimeraCommand::ChimeraCommand(const char *name, ChimeraCommandFunctionPointer f
     i_supported(supported),
     i_saves(saves),
     i_function(function),
-    i_min_args(min_args) {
+    i_min_args(min_args)
+{
     if(category == nullptr) this->i_category = "";
     else this->i_category = category;
     if(help == nullptr) this->i_help = "";
@@ -73,14 +75,18 @@ std::vector<std::string> split_arguments(const char *input, bool lowercase_first
     args.push_back(data);
     size_t length = input_copy.size();
     bool in_quotes = false;
-    for(size_t i=0;i<length;i++) {
+    for(size_t i=0;i<length;i++)
+    {
         char *c = &data[i];
-        if(*c == '"' && !(in_quotes = !in_quotes)) {
+        if(*c == '"' && !(in_quotes = !in_quotes))
+        {
             *c = ' ';
         }
 
-        if(!in_quotes && (*c == 0 || *c == ' ')) {
-            while(*c == ' ') {
+        if(!in_quotes && (*c == 0 || *c == ' '))
+        {
+            while(*c == ' ')
+            {
                 *c = 0;
                 i++;
                 c++;
@@ -91,15 +97,18 @@ std::vector<std::string> split_arguments(const char *input, bool lowercase_first
     }
 
     std::vector<std::string> args_cleaned;
-    for(size_t i=0;i<args.size();i++) {
+    for(size_t i=0;i<args.size();i++)
+    {
         std::string arg;
         size_t sl = strlen(args[i]);
         for(size_t c=0;c<sl;c++) {
             if(args[i][c] == '"') continue;
-            if(lowercase_first_argument && args_cleaned.size() == 0) {
+            if(lowercase_first_argument && args_cleaned.size() == 0)
+            {
                 arg += tolower(args[i][c]);
             }
-            else {
+            else
+            {
                 arg += args[i][c];
             }
         }
@@ -111,22 +120,27 @@ std::vector<std::string> split_arguments(const char *input, bool lowercase_first
 
 extern std::vector<ChimeraCommand> *commands;
 ChimeraCommandError execute_chimera_command(const char *command_input, bool silently, bool save) {
-    if(commands != nullptr && command_input != nullptr) {
+    if(commands != nullptr && command_input != nullptr)
+    {
         auto args_cleaned = split_arguments(command_input, true);
         if(args_cleaned.size() == 0) return CHIMERA_COMMAND_ERROR_COMMAND_NOT_FOUND;
         std::vector<const char *> args;
-        for(size_t i=0;i<args_cleaned.size();i++) {
+        for(size_t i=0;i<args_cleaned.size();i++)
+        {
             args.push_back(args_cleaned[i].data());
         }
-        for(size_t i=0;i<commands->size();i++) {
+        for(size_t i=0;i<commands->size();i++)
+        {
             ChimeraCommand &command = (*commands)[i];
-            if(args_cleaned[0] == command.name()) {
+            if(args_cleaned[0] == command.name())
+            {
                 extern const char *current_command;
                 const char *older_command = current_command;
                 if(strcmp(command.name(),"chimera") != 0) current_command = command.name();
                 extern bool silence_all_messages;
                 bool already_silent = silence_all_messages;
-                if(silently && !already_silent) {
+                if(silently && !already_silent)
+                {
                     silence_all_messages = true;
                 }
                 auto rval = CHIMERA_COMMAND_ERROR_COMMAND_NOT_FOUND;
@@ -138,7 +152,8 @@ ChimeraCommandError execute_chimera_command(const char *command_input, bool sile
                 else
                     rval = command.execute(args.size() - 1, &args[1]);
                 if(!save) settings_read_only(read_only);
-                if(silently && !already_silent) {
+                if(silently && !already_silent)
+                {
                     silence_all_messages = false;
                 }
                 current_command = older_command;
@@ -150,9 +165,11 @@ ChimeraCommandError execute_chimera_command(const char *command_input, bool sile
 }
 
 ChimeraCommand &find_chimera_command(const char *command_input) {
-    if(commands != nullptr && command_input != nullptr) {
+    if(commands != nullptr && command_input != nullptr)
+    {
         auto command_name = split_arguments(command_input, true)[0];
-        for(size_t i=0;i<commands->size();i++) {
+        for(size_t i=0;i<commands->size();i++)
+        {
             ChimeraCommand &command = (*commands)[i];
             if(command_name == command.name()) return command;
         }
@@ -166,47 +183,59 @@ bool bool_value(const char *v) noexcept {
 
 ChimeraCommandError chimera_command(size_t argc, const char **argv) noexcept {
     std::vector<std::string> list;
-    if(argc == 0) {
+    if(argc == 0)
+    {
         std::vector<std::string> list_a;
         const auto version_color = ColorARGB(1.0, 1.0, 0.478, 0.552);
         console_out("Chimera build " CHIMERA_BUILD_STRING " by " CHIMERA_AUTHOR, version_color);
         console_out("Lua API version (clua_version): " STR(CHIMERA_LUA_INTERPRETER), version_color);
-        for(size_t i=0;i<(*commands).size();i++) {
+        for(size_t i=0;i<(*commands).size();i++)
+        {
             auto &command = (*commands)[i];
             if(!command.supported()) continue;
             const char *string = command.category();
             if(strcmp(string,"") == 0) continue;
             bool added = false;
-            for(size_t k=0;k<list_a.size();k++) {
-                if(list_a[k] == string) {
+            for(size_t k=0;k<list_a.size();k++)
+            {
+                if(list_a[k] == string)
+                {
                     added = true;
                     break;
                 }
             }
-            if(!added) {
+            if(!added)
+            {
                 list_a.emplace_back(string);
             }
         }
-        if(list_a.size() == 0) {
+        if(list_a.size() == 0)
+        {
             console_out("There are no available categories.");
         }
-        else {
-            for(size_t i=0;i<list_a.size();i++) {
+        else
+        {
+            for(size_t i=0;i<list_a.size();i++)
+            {
                 const char *string = list_a[i].data();
                 bool added = false;
-                for(size_t k=0;k<list.size();k++) {
-                    if(list[k].compare(string) > 0) {
+                for(size_t k=0;k<list.size();k++)
+                {
+                    if(list[k].compare(string) > 0)
+                    {
                         list.insert(list.begin() + k, string);
                         added = true;
                         break;
                     }
                 }
-                if(!added) {
+                if(!added)
+                {
                     list.emplace_back(string);
                 }
             }
             console_out("Categories:");
-            for(size_t i=0;i<list.size();i++) {
+            for(size_t i=0;i<list.size();i++)
+            {
                 char z[256] = {};
                 sprintf(z,"  - %s", list[i].data());
                 console_out(z);
@@ -214,23 +243,29 @@ ChimeraCommandError chimera_command(size_t argc, const char **argv) noexcept {
             console_out("Use \"chimera <category>\" to list the commands in each category.");
         }
     }
-    else if(argc == 1) {
+    else if(argc == 1)
+    {
         std::string category = argv[0];
-        for(size_t i=0;i<category.size();i++) {
+        for(size_t i=0;i<category.size();i++)
+        {
             category[i] = tolower(category[i]);
         }
-        if(category == "issues") {
+        if(category == "issues")
+        {
             return chimera_command(0, nullptr);
         }
-        else if(category == "<category>") {
+        else if(category == "<category>")
+        {
             console_out_error("chimera: You need to replace <category> with the name of the category");
             return CHIMERA_COMMAND_ERROR_FAILURE;
         }
-        else if(category == "the name of the category") {
+        else if(category == "the name of the category")
+        {
             console_out("chimera: BLOOD GULCH SUCKS");
             return CHIMERA_COMMAND_ERROR_SUCCESS;
         }
-        else if(category == "basilisk") {
+        else if(category == "basilisk")
+        {
             console_out("Chimera Basilisk - By: Devieth", ColorARGB(1, 1, 0.84, 0));
             console_out("Fixed: Chat spam from servers when console is open.", ColorARGB(1, 0, 0, 0));
             console_out("Fixed: BSP loading errors. (Thanks to GoofballMichelle)", ColorARGB(1, 0, 0, 0));
@@ -238,66 +273,84 @@ ChimeraCommandError chimera_command(size_t argc, const char **argv) noexcept {
             console_out("Added: Anti-cheat stuff? (Alpha).", ColorARGB(1, 0, 0, 0));
             return CHIMERA_COMMAND_ERROR_SUCCESS;
         }
-        for(size_t i=0;i<(*commands).size();i++) {
+        for(size_t i=0;i<(*commands).size();i++)
+        {
             auto &command = (*commands)[i];
             if(!command.supported()) continue;
             if(category != command.category()) continue;
             const char *string = command.name();
             bool added = false;
-            for(size_t k=0;k<list.size();k++) {
-                if(list[k].compare(string) > 0) {
+            for(size_t k=0;k<list.size();k++)
+            {
+                if(list[k].compare(string) > 0)
+                {
                     list.insert(list.begin() + k, string);
                     added = true;
                     break;
                 }
             }
-            if(!added) {
+            if(!added)
+            {
                 list.emplace_back(string);
             }
         }
-        if(strcmp(argv[0],"") == 0) {
+        if(strcmp(argv[0],"") == 0)
+        {
             list.clear();
         }
         char x[256] = {};
-        if(list.size() != 0) {
+        if(list.size() != 0)
+        {
             sprintf(x, "chimera: Commands in \"%s\":", category.data());
             console_out(x);
-            for(size_t i=0;i<list.size();i++) {
+            for(size_t i=0;i<list.size();i++)
+            {
                 char z[256] = {};
                 sprintf(z,"  - %s", list[i].data());
                 console_out(z);
             }
             console_out("Use \"chimera <command>\" to get help for a command.");
         }
-        else {
-            if(category == "<command>") {
+        else
+        {
+            if(category == "<command>")
+            {
                 console_out_error("chimera: You need to replace <command> with the name of the command");
                 return CHIMERA_COMMAND_ERROR_FAILURE;
             }
-            else if(category == "the name of the command") {
+            else if(category == "the name of the command")
+            {
                 console_out("chimera: GENERATION II WAS BETTER THAN GENERATION I");
                 return CHIMERA_COMMAND_ERROR_SUCCESS;
             }
-            for(int z=0;z<2;z++) {
+            for(int z=0;z<2;z++)
+            {
                 char m[256] = {};
-                if(z == 0) {
+                if(z == 0)
+                {
                     sprintf(m, "%s", category.data());
                 }
-                else {
+                else
+                {
                     sprintf(m, "chimera_%s", category.data());
                 }
-                try {
+                try
+                {
                     auto &command_found = find_chimera_command(m);
                     std::string help = command_found.help();
-                    if(help == "") {
+                    if(help == "")
+                    {
                         sprintf(x, "chimera: No help available for \"%s\"...", command_found.name());
                         console_out_error(x);
                     }
-                    else {
+                    else
+                    {
                         std::vector<const char *> lines;
                         lines.push_back(help.data());
-                        for(size_t i=0;i<help.size();i++) {
-                            if(help[i] == '\n') {
+                        for(size_t i=0;i<help.size();i++)
+                        {
+                            if(help[i] == '\n')
+                            {
                                 help[i] = 0;
                                 lines.push_back(&help[i + 1]);
                             }
@@ -307,19 +360,23 @@ ChimeraCommandError chimera_command(size_t argc, const char **argv) noexcept {
                         console_out(x);
                         ColorARGB color;
                         color.red = 0.7;
-                        for(size_t i=0;i<lines.size();i++) {
+                        for(size_t i=0;i<lines.size();i++)
+                        {
                             memset(x,0,sizeof(x));
                             sprintf(x,"> %s", lines[i]);
                             console_out(x, color);
                         }
-                        if(!command_found.saves()) {
+                        if(!command_found.saves())
+                        {
                             console_out("This command does not automatically save.", color);
                         }
                     }
                     break;
                 }
-                catch(std::exception &) {
-                    if(z == 1) {
+                catch(std::exception &)
+                {
+                    if(z == 1)
+                    {
                         sprintf(x, "chimera: Could not find command or category \"%s\".", category.data());
                         console_out_error(x);
                         console_out_error("chimera: Check your spelling and try again.");
