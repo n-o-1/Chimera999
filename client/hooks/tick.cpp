@@ -2,6 +2,7 @@
 #include "../command/command.h"
 #include "../messaging/messaging.h"
 #include "../halo_data/tag_data.h"
+#include "../halo_data/server.h"
 #include "tick.h"
 
 static LARGE_INTEGER current_tick_time;
@@ -12,18 +13,23 @@ static bool tick_initialized = false;
 static std::vector<Event<event_no_args>> preevents;
 
 bool first_tick = false;
+static auto default_tps = 30.0;
 
 void add_pretick_event(event_no_args event_function, EventPriority priority) noexcept {
-    for(size_t i=0;i<preevents.size();i++) {
+    for(size_t i=0;i<preevents.size();i++)
+    {
         if(preevents[i].function == event_function) return;
     }
 
     if(!tick_initialized) initialize_tick();
     preevents.emplace_back(event_function, priority);
 }
+
 void remove_pretick_event(event_no_args event_function) noexcept {
-    for(size_t i=0;i<preevents.size();i++) {
-        if(preevents[i].function == event_function) {
+    for(size_t i=0;i<preevents.size();i++)
+    {
+        if(preevents[i].function == event_function)
+        {
             preevents.erase(preevents.begin() + i);
             return;
         }
@@ -38,7 +44,8 @@ static void on_pretick() noexcept {
 static std::vector<Event<event_no_args>> events;
 
 void add_tick_event(event_no_args event_function, EventPriority priority) noexcept {
-    for(size_t i=0;i<events.size();i++) {
+    for(size_t i=0;i<events.size();i++)
+    {
         if(events[i].function == event_function) return;
     }
     if(!tick_initialized) initialize_tick();
@@ -46,8 +53,10 @@ void add_tick_event(event_no_args event_function, EventPriority priority) noexce
 }
 
 void remove_tick_event(event_no_args event_function) noexcept {
-    for(size_t i=0;i<events.size();i++) {
-        if(events[i].function == event_function) {
+    for(size_t i=0;i<events.size();i++)
+    {
+        if(events[i].function == event_function)
+        {
             events.erase(events.begin() + i);
             return;
         }
@@ -101,10 +110,39 @@ double tick_progress() noexcept {
     else return 1.0;
 }
 
+static void auto_set_tps()
+{
+    if(tick_rate() != default_tps)
+    {
+        set_tick_rate(default_tps);
+    }
+}
+
+void tps_check_svr() noexcept {
+    if(server_type() == SERVER_DEDICATED)
+    {
+        set_tick_rate(default_tps);
+        add_tick_event(auto_set_tps);
+    }
+    else
+    {
+        remove_tick_event(auto_set_tps);
+    }
+}
+
 ChimeraCommandError tps_command(size_t argc, const char **argv) noexcept {
-    if(argc == 1) {
+    if(argc == 1)
+    {
         auto new_rate = atof(argv[0]);
-        if(new_rate < 0.01) {
+
+        if(server_type() == SERVER_DEDICATED)
+        {
+            console_out_error("This command cannot be used on a dedicated server.");
+            return CHIMERA_COMMAND_ERROR_FAILURE;
+        }
+
+        if(new_rate < 0.01)
+        {
             console_out_error("Tick rate cannot be less than 0.01.");
             return CHIMERA_COMMAND_ERROR_FAILURE;
         }
@@ -113,3 +151,4 @@ ChimeraCommandError tps_command(size_t argc, const char **argv) noexcept {
     console_out(std::to_string(tick_rate()));
     return CHIMERA_COMMAND_ERROR_SUCCESS;
 }
+
