@@ -5,14 +5,18 @@
 
 ChimeraCommandError hud_kill_feed_command(size_t argc, const char **argv) noexcept {
     static auto active = false;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value != active) {
+        if(new_value != active)
+        {
             auto &hud_kill_feed_sig = get_signature("hud_kill_feed_sig");
-            if(new_value) {
+            if(new_value)
+            {
                 write_code_any_value(hud_kill_feed_sig.address() + 1, reinterpret_cast<int>(static_cast<void (*)(const short *)>(hud_message)) - reinterpret_cast<int>(hud_kill_feed_sig.address() + 5));
             }
-            else {
+            else
+            {
                 hud_kill_feed_sig.undo();
             }
             active = new_value;
