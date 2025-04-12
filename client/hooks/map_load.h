@@ -4,7 +4,6 @@
 
 static std::vector<Event<event_no_args>> events;
 
-
 static bool map_load_initialized = false;
 
 void initialize_map_load() noexcept;
