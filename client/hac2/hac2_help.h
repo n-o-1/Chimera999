@@ -10,6 +10,7 @@ ChimeraCommandError hac2_timer_commands(size_t argc, const char **argv) noexcept
 ChimeraCommandError hac2_chat_commands(size_t argc, const char **argv) noexcept;
 ChimeraCommandError hac2_fov_command(size_t argc, const char **argv) noexcept;
 ChimeraCommandError hac2_widescreen_command(size_t argc, const char **argv) noexcept;
+ChimeraCommandError hac2_scope_blur_command(size_t argc, const char **argv) noexcept;
 ChimeraCommandError hac2_queue_command(size_t argc, const char **argv) noexcept;
 ChimeraCommandError hac2_devcam_command(size_t argc, const char **argv) noexcept;
 ChimeraCommandError hac2_draw_command(size_t argc, const char **argv) noexcept;
