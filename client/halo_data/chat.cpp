@@ -11,13 +11,15 @@ void chat_out(const char *message, uint32_t channel) noexcept {
     uintptr_t chat_out = reinterpret_cast<uintptr_t>(get_signature("chat_out_sig").address());
     size_t x = strlen(message);
     #define BLEN 256
-    if(x > BLEN) {
+    if(x > BLEN)
+    {
         return;
     }
     short *unicode = new short[BLEN+1]();
     short *unicode2 = new short[BLEN+1]();
 
-    for(int i=0;i<x;i++) {
+    for(int i=0;i<x;i++)
+    {
         unicode[i] = (short)message[i];
         unicode2[i] = (short)message[i];
     }
@@ -35,7 +37,7 @@ void chat_out(const char *message, uint32_t channel) noexcept {
         :
         : "r" (channel), "r" (unicode), "r" (unicode2), "r" (chat_out)
     );
-    
+
     delete[] unicode;
     delete[] unicode2;
 }
@@ -47,7 +49,8 @@ bool player_can_use_vehicle_chat() noexcept {
 }
 
 ChimeraCommandError chat_command(size_t argc, const char **argv) noexcept {
-    if(argc == 1) {
+    if(argc == 1)
+    {
         console_is_out(false);
         return CHIMERA_COMMAND_ERROR_SUCCESS;
     }
@@ -56,12 +59,14 @@ ChimeraCommandError chat_command(size_t argc, const char **argv) noexcept {
     if(method == "all") channel = 0;
     else if(method == "team") channel = 1;
     else if(method == "vehicle") channel = player_can_use_vehicle_chat() ? 2 : 1;
-    else {
+    else
+    {
         console_out_error("Expected all, team, or vehicle for argument #1.");
         return CHIMERA_COMMAND_ERROR_FAILURE;
     }
     auto message = std::string(argv[1]);
-    for(size_t i=2;i<argc;i++) {
+    for(size_t i=2;i<argc;i++)
+    {
         message = message + " " + argv[i];
     }
     chat_out(message.data(), channel);
