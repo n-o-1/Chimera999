@@ -38,7 +38,8 @@ void interpolate_all_cam_before() noexcept {
 
     camera_rollback = data;
 
-    if(tick_now != tick_before) {
+    if(tick_now != tick_before)
+    {
         tick_before = tick_now;
         auto &data = camera_data();
         memcpy(&camera_coords_buffer_1,&camera_coords_buffer_0,sizeof(camera_coords_buffer_1));
@@ -61,18 +62,23 @@ void interpolate_all_cam_before() noexcept {
     auto *pdata = HaloPlayer().player_data();
     auto *p_object_data = player_object.object_data();
 
-    if(p_object_data) {
+    if(p_object_data)
+    {
         auto &invehi = *reinterpret_cast<int8_t *>(p_object_data + 0x2F0);
-        if(chimera_interpolate_predict == 3 ) {
-            if (invehi == -1) {
+        if(chimera_interpolate_predict == 3 )
+        {
+            if (invehi == -1)
+            {
               return;
             }
         }
     }
 
     cam_interped = true;
-    if(ct != CAMERA_FIRST_PERSON) {
-        for(int i=0;i<2;i++) {
+    if(ct != CAMERA_FIRST_PERSON)
+    {
+        for(int i=0;i<2;i++)
+        {
             interpolate_vector_rotation(camera_coords_buffer_1.orientation[i],camera_coords_buffer_0.orientation[i],data.orientation[i],interpolation_tick_progress);
         }
     }
@@ -81,7 +87,8 @@ void interpolate_all_cam_before() noexcept {
 }
 
 void interpolate_all_cam_after() noexcept {
-    if(cam_interped) {
+    if(cam_interped)
+    {
         auto &camera = camera_data();
         camera.position = camera_rollback.position;
         memcpy(camera.orientation, camera_rollback.orientation, sizeof(camera.orientation));
@@ -100,14 +107,18 @@ float zoom_scale() noexcept {
     if(stored_zoom_scale != 0.0) return stored_zoom_scale;
     stored_zoom_scale = 1.0;
     auto zoom = zoom_level();
-    if(zoom) {
+    if(zoom)
+    {
         HaloObject po(HaloPlayer().object_id());
         auto *pd = po.object_data();
-        if(pd) {
+        if(pd)
+        {
             HaloObject pw(*reinterpret_cast<uint32_t *>(pd + 0x118));
             auto *pwd = pw.object_data();
-            if(pwd) {
-                if(pwd[0xB4] == 2) {
+            if(pwd)
+            {
+                if(pwd[0xB4] == 2)
+                {
                     auto *&tag_data = HaloTag::from_id(*reinterpret_cast<HaloTagID *>(pwd)).data;
                     auto &max_zoom = *reinterpret_cast<float *>(tag_data + 0x3E0);
                     auto &zoom_levels = *reinterpret_cast<char *>(tag_data + 0x3DA);
