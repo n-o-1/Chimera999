@@ -14,9 +14,10 @@ ChimeraCommandError mouse_sensitivity_command(size_t argc, const char **argv) no
   auto &mouse_vert_1_sig = get_signature("mouse_vert_1_sig");
   auto &mouse_vert_2_sig = get_signature("mouse_vert_2_sig");
 
-  if(argc == 2) {
-    if(!active) {
-
+  if(argc == 2)
+  {
+    if(!active)
+    {
       write_code_any_value(mouse_horiz_1_sig.address() + 2, &horiz);
       write_code_any_value(mouse_horiz_2_sig.address() + 1, &horiz);
       write_code_any_value(mouse_vert_1_sig.address() + 2, &vert);
@@ -26,12 +27,14 @@ ChimeraCommandError mouse_sensitivity_command(size_t argc, const char **argv) no
     horiz = strtof(argv[0], nullptr) - 2.5;
     vert = strtof(argv[1], nullptr) - 2.5;
 
-    if(!block_mouse_acceleration && (horiz < -0.5 || vert < -0.5)) {
+    if(!block_mouse_acceleration && (horiz < -0.5 || vert < -0.5))
+    {
       console_out_warning("You are using a low sensitivity value.");
       console_out_warning("Enable chimera_block_mouse_acceleration to prevent issues.");
     }
   }
-  else if(argc == 1) {
+  else if(argc == 1)
+  {
     mouse_horiz_1_sig.undo();
     mouse_horiz_2_sig.undo();
     mouse_vert_1_sig.undo();
