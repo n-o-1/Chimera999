@@ -21,7 +21,8 @@ static bool modded_stock_maps = false;
 
 static bool same_string_case_insensitive(const char *a, const char *b) {
     if(a == b) return true;
-    while(tolower(*a) == tolower(*b)) {
+    while(tolower(*a) == tolower(*b))
+    {
         if(*a == 0) return true;
         a++;
         b++;
@@ -33,7 +34,8 @@ static bool save_cache() noexcept {
     char path[MAX_PATH] = {};
     sprintf(path, "%s\\chimera\\cache.bin", halo_path());
     FILE *f = fopen(path, "wb");
-    if(f) {
+    if(f)
+    {
         fwrite(&cache[0], sizeof(cache[0])*cache.size(), 1, f);
         fclose(f);
     }
@@ -44,12 +46,14 @@ static bool load_cache() noexcept {
     char path[MAX_PATH] = {};
     sprintf(path, "%s\\chimera\\cache.bin", halo_path());
     FILE *f = fopen(path, "rb");
-    if(f) {
+    if(f)
+    {
         fseek(f, 0, SEEK_END);
         size_t cache_items = ftell(f) / sizeof(CacheEntry);
         fseek(f, 0, SEEK_SET);
         cache.clear();
-        for(size_t i=0;i<cache_items;i++) {
+        for(size_t i=0;i<cache_items;i++)
+        {
             CacheEntry ce;
             fread(&ce, sizeof(ce), 1, f);
             cache.push_back(ce);
@@ -75,7 +79,8 @@ static uint32_t calculate_crc32_of_map_file(FILE *f) noexcept {
     // First, the BSP(s)
     auto &structure_bsp_count = *reinterpret_cast<uint32_t *>(scenario_tag_data + 0x5A4);
     auto *structure_bsps = tag_data + (*reinterpret_cast<uint32_t *>(scenario_tag_data + 0x5A4 + 4) - 0x40440000);
-    for(size_t b=0;b<structure_bsp_count;b++) {
+    for(size_t b=0;b<structure_bsp_count;b++)
+    {
         char *bsp = structure_bsps + b * 0x20;
         auto &bsp_offset = *reinterpret_cast<uint32_t *>(bsp);
         auto &bsp_size = *reinterpret_cast<uint32_t *>(bsp + 4);
@@ -150,41 +155,53 @@ static uint32_t stock_crc32(const std::string &name) {
 static void do_crc_things() noexcept {
     static char *loading_map = *reinterpret_cast<char **>(get_signature("loading_map_sig").address() + 1);
     auto *indices = map_indices();
-    for(size_t i=0;i<maps_count();i++) {
-        if(same_string_case_insensitive(indices[i].file_name, loading_map)) {
-            if(indices[i].crc32 == 0xFFFFFFFF && modded_stock_maps) {
+    for(size_t i=0;i<maps_count();i++)
+    {
+        if(same_string_case_insensitive(indices[i].file_name, loading_map))
+        {
+            if(indices[i].crc32 == 0xFFFFFFFF && modded_stock_maps)
+            {
                 indices[i].crc32 = stock_crc32(indices[i].file_name);
             }
 
-            if(indices[i].crc32 == 0xFFFFFFFF && use_cache) {
-                for(size_t c=0;c<cache.size();c++) {
-                    if(same_string_case_insensitive(indices[i].file_name, cache[c].name)) {
+            if(indices[i].crc32 == 0xFFFFFFFF && use_cache)
+            {
+                for(size_t c=0;c<cache.size();c++)
+                {
+                    if(same_string_case_insensitive(indices[i].file_name, cache[c].name))
+                    {
                         indices[i].crc32 = cache[c].crc32;
                     }
                 }
             }
 
-            if(indices[i].crc32 == 0xFFFFFFFF) {
+            if(indices[i].crc32 == 0xFFFFFFFF)
+            {
                 char map_path[MAX_PATH] = {};
                 sprintf(map_path, "maps\\%s.map", indices[i].file_name);
                 FILE *f = fopen(map_path, "rb");
-                if(!f && open_sauce_present()) {
+                if(!f && open_sauce_present())
+                {
                     sprintf(map_path, "maps\\%s.yelo", indices[i].file_name);
                     f = fopen(map_path, "rb");
                 }
-                if(!f && hac2_present()) {
+                if(!f && hac2_present())
+                {
                     sprintf(map_path, "%s\\hac\\maps\\%s.map", halo_path(), indices[i].file_name);
                     f = fopen(map_path, "rb");
                 }
-                if(f) {
+                if(f)
+                {
                     indices[i].crc32 = ~calculate_crc32_of_map_file(f);
                     fclose(f);
-                    if(use_cache) {
+                    if(use_cache)
+                    {
                         CacheEntry ce;
                         strcpy(ce.name, indices[i].file_name);
                         ce.crc32 = indices[i].crc32;
                         cache.push_back(ce);
-                        if(!save_cache()) {
+                        if(!save_cache())
+                        {
                             console_out_error("Error: Unable to save to cache.");
                         }
                     }
@@ -202,7 +219,8 @@ void setup_fast_startup() {
     static unsigned char nop5[5] = { 0x90, 0x90, 0x90, 0x90, 0x90 };
     write_code_c(fast_startup_sig.address(), nop5);
 
-    unsigned char code[] = {
+    unsigned char code[] =
+    {
         // shl eax, 0x04
         0xC1, 0xE0, 0x04,
 
@@ -233,7 +251,8 @@ void setup_fast_startup() {
 
 /// Function for command chimera_cache
 ChimeraCommandError cache_command(size_t argc, const char **argv) noexcept {
-    if(argc == 1) {
+    if(argc == 1)
+    {
         use_cache = bool_value(argv[0]);
         load_cache();
     }
@@ -246,20 +265,24 @@ ChimeraCommandError cache_clear_command(size_t argc, const char **argv) noexcept
     console_out("Erasing cache...");
     cache.clear();
     auto *indices = map_indices();
-    for(size_t i=0;i<maps_count();i++) {
+    for(size_t i=0;i<maps_count();i++)
+    {
         indices[i].crc32 = 0xFFFFFFFF;
     }
-    if(!save_cache()) {
+    if(!save_cache())
+    {
         console_out_error("Error: Unable to save to cache.");
     }
-    else {
+    else
+    {
         console_out("Done!");
     }
     return CHIMERA_COMMAND_ERROR_SUCCESS;
 }
 
 ChimeraCommandError modded_stock_maps_command(size_t argc, const char **argv) noexcept {
-    if(argc == 1) {
+    if(argc == 1)
+    {
         modded_stock_maps = bool_value(argv[0]);
     }
     console_out(modded_stock_maps ? "true" : "false");
