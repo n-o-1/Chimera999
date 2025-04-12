@@ -21,7 +21,8 @@ void fp_before() noexcept {
     static uint32_t skip = false;
     auto tick_now = tick_count();
 
-    if(tick_now != tick_before) {
+    if(tick_now != tick_before)
+    {
         static uint32_t weapon_id = NULL_ID;
         tick_before = tick_now;
         memcpy(fpbuffer1,fpbuffer0,sizeof(fpbuffer0));
@@ -40,7 +41,8 @@ void fp_before() noexcept {
 
     if(skip) return;
 
-    for(int i=0;i<128;i++) {
+    for(int i=0;i<128;i++)
+    {
         interpolate_quat(fpbuffer1[i].rotation_stuff, fpbuffer0[i].rotation_stuff, fpn[i].rotation_stuff, interpolation_tick_progress);
         interpolate_vector(fpbuffer1[i].position, fpbuffer0[i].position, fpn[i].position, interpolation_tick_progress);
         fpn[i].unknown_1 = fpbuffer1[i].unknown_1 + (fpbuffer0[i].unknown_1 - fpbuffer1[i].unknown_1) * interpolation_tick_progress;
