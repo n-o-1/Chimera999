@@ -8,15 +8,18 @@ static bool camera_initialized = false;
 static std::vector<Event<event_no_args>> preevents;
 
 void add_precamera_event(event_no_args event_function, EventPriority priority) noexcept {
-    for(size_t i=0;i<preevents.size();i++) {
+    for(size_t i=0;i<preevents.size();i++)
+    {
         if(preevents[i].function == event_function) return;
     }
     if(!camera_initialized) initialize_camera();
     preevents.emplace_back(event_function, priority);
 }
 void remove_precamera_event(event_no_args event_function) noexcept {
-    for(size_t i=0;i<preevents.size();i++) {
-        if(preevents[i].function == event_function) {
+    for(size_t i=0;i<preevents.size();i++)
+    {
+        if(preevents[i].function == event_function)
+        {
             preevents.erase(preevents.begin() + i);
             return;
         }
@@ -30,15 +33,18 @@ static void on_precamera() {
 static std::vector<Event<event_no_args>> events;
 
 void add_camera_event(event_no_args event_function, EventPriority priority) noexcept {
-    for(size_t i=0;i<events.size();i++) {
+    for(size_t i=0;i<events.size();i++)
+    {
         if(events[i].function == event_function) return;
     }
     if(!camera_initialized) initialize_camera();
     events.emplace_back(event_function, priority);
 }
 void remove_camera_event(event_no_args event_function) noexcept {
-    for(size_t i=0;i<events.size();i++) {
-        if(events[i].function == event_function) {
+    for(size_t i=0;i<events.size();i++)
+    {
+        if(events[i].function == event_function)
+        {
             events.erase(events.begin() + i);
             return;
         }
