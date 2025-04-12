@@ -11,10 +11,13 @@ static bool first_use = true;
 static void read_buffer() noexcept {
     strcpy(new_text, console_text);
     const char *connect = "connect";
-    for(size_t c=0;c<4;c++) {
+    for(size_t c=0;c<4;c++)
+    {
         char *beginning = new_text + c;
-        if(strncmp(beginning, connect, strlen(connect)) == 0) {
-            for(size_t i=strlen(connect); i<sizeof(new_text) - 1 - c;i++) {
+        if(strncmp(beginning, connect, strlen(connect)) == 0)
+        {
+            for(size_t i=strlen(connect); i<sizeof(new_text) - 1 - c;i++)
+            {
                 if(beginning[i] == 0) break;
                 if(beginning[i] != ' ') beginning[i] = '*';
             }
@@ -25,14 +28,17 @@ static void read_buffer() noexcept {
 
 ChimeraCommandError block_server_ip_command(size_t argc, const char **argv) noexcept {
     static auto active = false;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value != active) {
+        if(new_value != active)
+        {
             auto &join_server_ip_text_sig = get_signature("join_server_ip_text_sig");
             auto &f1_ip_text_render_call_sig = get_signature("f1_ip_text_render_call_sig");
             auto &create_server_ip_text_sig = get_signature("create_server_ip_text_sig");
             auto &console_buffer_text_show_sig = get_signature("console_buffer_text_show_sig");
-            if(new_value) {
+            if(new_value)
+            {
                 const unsigned char mod[] = { 0x90, 0x90, 0x90, 0x90, 0x90 };
                 write_code_c(join_server_ip_text_sig.address() + 5, mod);
                 write_code_c(f1_ip_text_render_call_sig.address(), mod);
@@ -47,7 +53,8 @@ ChimeraCommandError block_server_ip_command(size_t argc, const char **argv) noex
 
                 memset(new_text, 0, sizeof(new_text));
             }
-            else {
+            else
+            {
                 join_server_ip_text_sig.undo();
                 f1_ip_text_render_call_sig.undo();
                 create_server_ip_text_sig.undo();
@@ -68,7 +75,8 @@ ChimeraCommandError block_server_ip_command2() noexcept {
             auto &f1_ip_text_render_call_sig = get_signature("f1_ip_text_render_call_sig");
             auto &create_server_ip_text_sig = get_signature("create_server_ip_text_sig");
             auto &console_buffer_text_show_sig = get_signature("console_buffer_text_show_sig");
-            if(first_use) {
+            if(first_use)
+            {
                 const unsigned char mod[] = { 0x90, 0x90, 0x90, 0x90, 0x90 };
                 write_code_c(join_server_ip_text_sig.address() + 5, mod);
                 write_code_c(f1_ip_text_render_call_sig.address(), mod);
