@@ -25,7 +25,8 @@ void write_jmp_call(void *call_instruction, void *before_function, void *after_f
     size_t nops = 0;
     size_t whereami = 0;
 
-    if(before_function) {
+    if(before_function)
+    {
         codecave.data[whereami + 0] = 0x60;
         codecave.data[whereami + 1] = 0xE8;
         *reinterpret_cast<int *>(codecave.data + whereami + 2) = reinterpret_cast<int>(before_function) - reinterpret_cast<int>(codecave.data + whereami + 2 + 4);
@@ -33,7 +34,8 @@ void write_jmp_call(void *call_instruction, void *before_function, void *after_f
         whereami += 7;
     }
 
-    switch(*call_instruction_char) {
+    switch(*call_instruction_char)
+    {
         // call <address>
         case 0xE8:
             codecave.data[whereami + 0] = 0xE8;
@@ -43,7 +45,8 @@ void write_jmp_call(void *call_instruction, void *before_function, void *after_f
             break;
 
         case 0x81:
-            switch(call_instruction_char[1]) {
+            switch(call_instruction_char[1])
+            {
                 case 0x3D:
                     memcpy(codecave.data + whereami, call_instruction, 10);
                     whereami += 10;
@@ -57,7 +60,8 @@ void write_jmp_call(void *call_instruction, void *before_function, void *after_f
         default: std::terminate();
     }
 
-    if(after_function) {
+    if(after_function)
+    {
         codecave.data[whereami + 0] = 0x60;
         codecave.data[whereami + 1] = 0xE8;
         *reinterpret_cast<int *>(codecave.data + whereami + 2) = reinterpret_cast<int>(after_function) - reinterpret_cast<int>(codecave.data + whereami + 2 + 4);
@@ -81,9 +85,11 @@ std::vector<ChimeraSignature> *signatures = nullptr;
 std::vector<std::string> *missing_signatures = nullptr;
 
 ChimeraSignature &get_signature(const char *name) noexcept {
-    for(size_t i=0;i<signatures->size();i++) {
+    for(size_t i=0;i<signatures->size();i++)
+    {
         auto &sig = (*signatures)[i];
-        if(strcmp(sig.name(), name) == 0) {
+        if(strcmp(sig.name(), name) == 0)
+        {
             return sig;
         }
     }
@@ -94,11 +100,13 @@ ChimeraSignature &get_signature(const char *name) noexcept {
 }
 
 static bool add_signature(const char *name, const short *signature, size_t signature_size) noexcept {
-    try {
+    try
+    {
         (*signatures).emplace_back(name, signature, signature_size);
         return true;
     }
-    catch(std::exception &e) {
+    catch(std::exception &e)
+    {
         (*missing_signatures).push_back(name);
         return false;
     }
