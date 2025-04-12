@@ -12,12 +12,13 @@ ChimeraCommandError hac2_command(size_t argc, const char **argv) noexcept {
   console_out("chimera_hac2_chat - Chat customization options",ColorARGB(1, 1, 0.84, 0));
   console_out("chimera_hac2_fov - Field of view adjustment",ColorARGB(1, 1, 0.84, 0));
   console_out("chimera_hac2_widescreen - HUD scaling settings",ColorARGB(1, 1, 0.84, 0));
+  console_out("chimera_hac2_scope_blur - Scope blur settings",ColorARGB(1, 1, 0.84, 0));
   console_out("chimera_hac2_queue - Server queue management",ColorARGB(1, 1, 0.84, 0));
   console_out("chimera_hac2_devcam - Developer camera controls",ColorARGB(1, 1, 0.84, 0));
   console_out("chimera_hac2_draw - Draw distance settings",ColorARGB(1, 1, 0.84, 0));
-  console_out("chimera_hac2_recalculate - Map checksum utilities",ColorARGB(1, 1, 0.84, 0));
+  console_out("chimera_hac2_recalculate - Map checksum command",ColorARGB(1, 1, 0.84, 0));
   console_out("chimera_hac2_objects - Object visibility settings",ColorARGB(1, 1, 0.84, 0));
-  console_out("chimera_hac2_cache - Cache management",ColorARGB(1, 1, 0.84, 0));
+  console_out("chimera_hac2_cache - Cache command",ColorARGB(1, 1, 0.84, 0));
   console_out("\nFor detailed information about any command, type the command name");
   console_out("Example: chimera_hac2_optic");
 
@@ -104,6 +105,12 @@ ChimeraCommandError hac2_widescreen_command(size_t argc, const char **argv) noex
   console_out("HAC2 Widescreen Command\n",ColorARGB(1, 1, 0.84, 0));
   console_out("hac_widescreen [0/1] - Turn HAC2's HUD scaling fix on/off. The default is on.\n");
   return CHIMERA_COMMAND_ERROR_SUCCESS;
+}
+
+ChimeraCommandError hac2_scope_blur_command(size_t argc, const char **argv) noexcept {
+    console_out("HAC2 Scope Blur Command\n",ColorARGB(1, 1, 0.84, 0));
+    console_out("scope_blur [0/1] - Turn zoom scope blur mask on/off.\n");
+    return CHIMERA_COMMAND_ERROR_SUCCESS;
 }
 
 ChimeraCommandError hac2_queue_command(size_t argc, const char **argv) noexcept {
