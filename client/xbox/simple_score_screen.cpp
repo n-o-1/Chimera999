@@ -6,14 +6,17 @@
 bool simple_score_screen_active = false;
 
 ChimeraCommandError simple_score_screen_command(size_t argc, const char **argv) noexcept {
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value != simple_score_screen_active) {
+        if(new_value != simple_score_screen_active)
+        {
             auto &ss_elements_sig = get_signature("ss_elements_sig");
             auto &ss_score_background_sig = get_signature("ss_score_background_sig");
             auto &ss_score_position_sig = get_signature("ss_score_position_sig");
             simple_score_screen_active = new_value;
-            if(new_value) {
+            if(new_value)
+            {
 
                 #define CENTER_POS 300
                 #define NAME_POS CENTER_POS - 70
@@ -41,7 +44,8 @@ ChimeraCommandError simple_score_screen_command(size_t argc, const char **argv) 
                 unsigned char nope[] = {0x90, 0x90, 0x90, 0x90, 0x90};
                 write_code_c(ss_score_background_sig.address() + 52, nope);
             }
-            else {
+            else
+            {
                 ss_elements_sig.undo();
                 ss_score_background_sig.undo();
                 ss_score_position_sig.undo();
