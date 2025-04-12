@@ -42,10 +42,13 @@ struct TagScenarioPlayerStartingLocation {
     TagScenarioSpawnGametype type3;
     char unknown[0x18];
 
-    bool can_spawn_in_gametype(const Gametype &gametype) noexcept {
-        for(int i=0;i<4;i++) {
+    bool can_spawn_in_gametype(const Gametype &gametype) noexcept
+    {
+        for(int i=0;i<4;i++)
+        {
             bool x;
-            switch(*(&this->type0 + i)) {
+            switch(*(&this->type0 + i))
+            {
                 case SPAWN_GAMETYPE_NONE:
                     x = false;
                     break;
@@ -99,23 +102,28 @@ static void show_spawns() noexcept {
     if(stype == SERVER_NONE) return;
     static bool biped;
     auto ticks = tick_count();
-    if(ticks < tickles) {
+    if(ticks < tickles)
+    {
         total_spawns = 0;
     }
-    if(ticks < tickles || tickles == -1) {
+    if(ticks < tickles || tickles == -1)
+    {
         auto *&tag_data = HaloTag::from_id(*reinterpret_cast<HaloTagID *>(0x40440004)).data;
         auto &player_spawn_count = *reinterpret_cast<uint32_t *>(tag_data + 0x354);
         player_spawn_data = *reinterpret_cast<TagScenarioPlayerStartingLocation **>(tag_data + 0x354 + 4);
-        if(player_spawn_count > 256) {
+        if(player_spawn_count > 256)
+        {
             tickles = ticks;
             return;
         }
         auto marker = 0xFFFFFFFF;
 
         auto *&tags = *reinterpret_cast<HaloTag **>(0x40440000);
-        for(size_t i=0;i<*reinterpret_cast<uint32_t *>(0x4044000C);i++) {
+        for(size_t i=0;i<*reinterpret_cast<uint32_t *>(0x4044000C);i++)
+        {
             auto &tag = tags[i];
-            if(tag.tag_class == 0x7363656E && strcmp(tag.path,"scenery\\overflow_spawn_marker\\overflow_spawn_marker") == 0) {
+            if(tag.tag_class == 0x7363656E && strcmp(tag.path,"scenery\\overflow_spawn_marker\\overflow_spawn_marker") == 0)
+            {
                 marker = tag.id;
                 biped = false;
                 break;
@@ -124,22 +132,28 @@ static void show_spawns() noexcept {
 
         if(marker == 0xFFFFFFFF) {
             biped = true;
-            for(size_t i=0;i<*reinterpret_cast<uint32_t *>(0x4044000C);i++) {
+            for(size_t i=0;i<*reinterpret_cast<uint32_t *>(0x4044000C);i++)
+            {
                 auto &tag = tags[i];
-                if(tag.tag_class == 0x6D617467 && strcmp(tag.path,"globals\\globals") == 0) {
+                if(tag.tag_class == 0x6D617467 && strcmp(tag.path,"globals\\globals") == 0)
+                {
                     auto &player_info_count = *reinterpret_cast<uint32_t *>(tag.data + 0x170);
                     auto *&player_info = *reinterpret_cast<char **>(tag.data + 0x174);
-                    if(player_info_count) {
+                    if(player_info_count)
+                    {
                         marker = *reinterpret_cast<HaloTagID *>(player_info + 0xC);
                         auto &mpinfo_count = *reinterpret_cast<uint32_t *>(tag.data + 0x164);
                         auto *&mpinfo = *reinterpret_cast<char **>(tag.data + 0x168);
-                        if(mpinfo_count) {
-                            if(marker == *reinterpret_cast<uint32_t *>(mpinfo + 0x10 + 0xC)) {
+                        if(mpinfo_count)
+                        {
+                            if(marker == *reinterpret_cast<uint32_t *>(mpinfo + 0x10 + 0xC))
+                            {
                                 tickles = ticks;
                                 return;
                             }
                         }
-                        else {
+                        else
+                        {
                             tickles = ticks;
                             return;
                         }
@@ -149,50 +163,60 @@ static void show_spawns() noexcept {
             }
 
             auto test_marker = HaloTagID(marker);
-            if(test_marker.is_valid()) {
+            if(test_marker.is_valid())
+            {
                 auto *&unit_tag_data = HaloTag::from_id(test_marker).data;
-                if(*reinterpret_cast<uint16_t *>(unit_tag_data) == 0) {
+                if(*reinterpret_cast<uint16_t *>(unit_tag_data) == 0)
+                {
                     *reinterpret_cast<uint32_t *>(unit_tag_data + 0x70 + 0xC) = 0xFFFFFFFF;
                     auto &flags = *reinterpret_cast<uint16_t *>(unit_tag_data + 0x2);
-                    if(!(flags & 4)) {
+                    if(!(flags & 4))
+                    {
                         flags += 4;
                     }
-                    if(!(flags & 1)) {
+                    if(!(flags & 1))
+                    {
                         flags += 1;
                     }
                     auto &unit_flags = *reinterpret_cast<uint32_t *>(unit_tag_data + 0x17C);
-                    if(!(unit_flags & 65536)) {
+                    if(!(unit_flags & 65536))
+                    {
                         unit_flags += 65536;
                     }
                     auto &biped_flags = *reinterpret_cast<uint32_t *>(unit_tag_data + 0x2F4);
-                    if(!(biped_flags & 32)) {
+                    if(!(biped_flags & 32))
+                    {
                         biped_flags += 32;
                     }
                     *reinterpret_cast<float *>(unit_tag_data + 0x20) = 0;
                     *reinterpret_cast<float *>(unit_tag_data + 0x2D8) = 0;
                 }
-                else {
+                else
+                {
                     tickles = ticks;
                     return;
                 }
             }
-            else {
+            else
+            {
                 tickles = ticks;
                 return;
             }
         }
 
-
-        for(auto i=0;i<player_spawn_count;i++) {
+        for(auto i=0;i<player_spawn_count;i++)
+        {
             auto &spawn = player_spawn_data[i];
-            if(spawn.can_spawn_in_gametype(gametype())) {
+            if(spawn.can_spawn_in_gametype(gametype()))
+            {
                 auto id = spawn_object(marker, spawn.position.x, spawn.position.y, spawn.position.z);
                 auto &stored_spawn = objects[total_spawns++];
                 stored_spawn.object_id = id;
                 stored_spawn.spawn_id = i;
                 HaloObject object(id);
                 auto *data = object.object_data();
-                if(data) {
+                if(data)
+                {
                     auto &rotation = reinterpret_cast<BaseHaloObject *>(data)->orientation[0];
                     rotation.x = cos(spawn.rotation);
                     rotation.y = sin(spawn.rotation);
@@ -203,7 +227,8 @@ static void show_spawns() noexcept {
     }
 
     auto *pdata = HaloPlayer().player_data();
-    if(pdata) {
+    if(pdata)
+    {
         auto &team = *reinterpret_cast<uint16_t *>(pdata + 0x20);
         Vector3D allies[16];
         Vector3D enemies[16];
@@ -212,18 +237,22 @@ static void show_spawns() noexcept {
         size_t allies_count = 0;
         size_t enemies_count = 0;
 
-        for(size_t p=0;p<16;p++) {
+        for(size_t p=0;p<16;p++)
+        {
             HaloPlayer player(p);
             HaloObject player_object(player.object_id());
             auto *oplayer_data = player.player_data();
             auto *oplayer_object_data = player_object.object_data();
-            if(oplayer_object_data) {
+            if(oplayer_object_data)
+            {
                 auto &oteam = *reinterpret_cast<uint16_t *>(oplayer_data + 0x20);
                 auto &location = reinterpret_cast<BaseHaloObject *>(oplayer_object_data)->position_script;
-                if(oteam == team) {
+                if(oteam == team)
+                {
                     allies[allies_count++] = location;
                 }
-                else {
+                else
+                {
                     enemies[enemies_count++] = location;
                 }
             }
@@ -232,17 +261,21 @@ static void show_spawns() noexcept {
         int friend_influenced = 0;
         auto ctf = gametype() == GAMETYPE_CTF;
 
-        struct NoSpawnSphere {
+        struct NoSpawnSphere
+        {
             Vector3D position;
             float radius;
         };
 
         std::vector<NoSpawnSphere> nope;
 
-        for(size_t i=0;i<2048;i++) {
+        for(size_t i=0;i<2048;i++)
+        {
             bool skip = false;
-            for(size_t s=0;s<total_spawns;s++) {
-                if((objects[s].object_id & 0xFFFF) == i) {
+            for(size_t s=0;s<total_spawns;s++)
+            {
+                if((objects[s].object_id & 0xFFFF) == i)
+                {
                     skip = true;
                     break;
                 }
@@ -250,10 +283,12 @@ static void show_spawns() noexcept {
             if(skip) continue;
             HaloObject o(i);
             char *odata = o.object_data();
-            if(odata) {
+            if(odata)
+            {
                 BaseHaloObject &bho = *reinterpret_cast<BaseHaloObject *>(odata);
                 char *tag_data = HaloTag::from_id(bho.tag_id).data;
-                if(*tag_data == 1 || *tag_data == 0) {
+                if(*tag_data == 1 || *tag_data == 0)
+                {
                     NoSpawnSphere nss;
                     nss.position = bho.position_script;
                     nss.radius = *reinterpret_cast<float *>(tag_data + 0x04);
@@ -262,16 +297,20 @@ static void show_spawns() noexcept {
             }
         }
 
-        for(size_t i=0;i<total_spawns;i++) {
+        for(size_t i=0;i<total_spawns;i++)
+        {
             auto &stored_spawn = objects[i];
             auto &spawn_data = player_spawn_data[stored_spawn.spawn_id];
-            if(ctf && spawn_data.team_index != team) {
+            if(ctf && spawn_data.team_index != team)
+            {
                 blocked[i] = true;
                 continue;
             }
-            for(size_t n=0;n<nope.size();n++) {
+            for(size_t n=0;n<nope.size();n++)
+            {
                 auto &sphere = nope[n];
-                if(distance_squared(sphere.position, spawn_data.position) < sphere.radius*sphere.radius) {
+                if(distance_squared(sphere.position, spawn_data.position) < sphere.radius*sphere.radius)
+                {
                     blocked[i] = true;
                     break;
                 }
@@ -279,9 +318,11 @@ static void show_spawns() noexcept {
             if(blocked[i]) continue;
             HaloObject obj(stored_spawn.object_id);
             auto *odata = obj.object_data();
-            if(odata) {
+            if(odata)
+            {
                 auto &oobject = *reinterpret_cast<BaseHaloObject *>(odata);
-                if(biped) {
+                if(biped)
+                {
                     oobject.health = 10000000000.0;
                     oobject.shield = 10000000000.0;
                     oobject.position = spawn_data.position;
@@ -292,13 +333,16 @@ static void show_spawns() noexcept {
                 float friend_weight = 1.0;
                 const auto friend_weight_max = 4.0;
 
-                for(size_t a=0;a<allies_count;a++) {
+                for(size_t a=0;a<allies_count;a++)
+                {
                     auto &ally = allies[a];
                     auto odistance = distance(ally, spawn_data.position);
-                    if(odistance < 1.0) {
+                    if(odistance < 1.0)
+                    {
                         blocked[i] = true;
                     }
-                    else if(odistance < 6.0) {
+                    else if(odistance < 6.0)
+                    {
                         float weight = 1 - (odistance - 1) / 5;
                         friend_weight += weight * 3;
                         friend_influenced++;
@@ -306,17 +350,22 @@ static void show_spawns() noexcept {
                 }
                 if(friend_weight > friend_weight_max) friend_weight = friend_weight_max;
 
-                if(stype == SERVER_LOCAL) {
-                    for(size_t e=0;e<enemies_count;e++) {
+                if(stype == SERVER_LOCAL)
+                {
+                    for(size_t e=0;e<enemies_count;e++)
+                    {
                         auto &enemy = enemies[e];
                         auto odistance = distance(enemy, spawn_data.position);
-                        if(odistance < 1.0) {
+                        if(odistance < 1.0)
+                        {
                             blocked[i] = true;
                         }
-                        else if(odistance < 2.0) {
+                        else if(odistance < 2.0)
+                        {
                             enemy_weight *= 0;
                         }
-                        else if(odistance < 5.0) {
+                        else if(odistance < 5.0)
+                        {
                             float weight = (odistance - 2) / 3;
                             enemy_weight *= weight;
                         }
@@ -333,24 +382,30 @@ static void show_spawns() noexcept {
         if(spawn_weight > 5.0) spawn_weight = 5.0;
 
         float chances[max_spawns];
-        for(size_t i=0;i<total_spawns;i++) {
-            if(weights[i] > 1.0) {
+        for(size_t i=0;i<total_spawns;i++)
+        {
+            if(weights[i] > 1.0)
+            {
                 chances[i] = weights[i] / spawn_weight;
                 if(chances[i] > 1.0) chances[i] = 1.0;
             }
-            else if (weights[i] == 1.0 ){
+            else if (weights[i] == 1.0 )
+            {
                 chances[i] = 0.0;
             }
-            else {
+            else
+            {
                 chances[i] = -(1.0 - weights[i]);
             }
         }
 
-        for(size_t i=0;i<total_spawns;i++) {
+        for(size_t i=0;i<total_spawns;i++)
+        {
             auto &stored_spawn = objects[i];
             HaloObject obj(stored_spawn.object_id);
             auto *odata = obj.object_data();
-            if(odata) {
+            if(odata)
+            {
                 //auto spawn_chance = weights[i] / total_weight;
                 auto &spawn_chance = chances[i];
                 auto &oobject = *reinterpret_cast<BaseHaloObject *>(odata);
@@ -358,37 +413,45 @@ static void show_spawns() noexcept {
 
                 ColorRGB color;
                 color.blue = 0.0;
-                if(blocked[i]) {
+                if(blocked[i])
+                {
                     color.red = 0;
                     color.green = 0;
                     oobject.scale = 0.25;
                 }
-                else if(spawn_chance > 0) {
+                else if(spawn_chance > 0)
+                {
                     color.red = (1 - spawn_chance);
                     color.green = (spawn_chance) * 0.5 + 0.5;
-                    if(friend_influenced == 1) {
+                    if(friend_influenced == 1)
+                    {
                         color.blue = color.green * 0.8;
                     }
                     oobject.scale = 0.4 + 0.35 * spawn_chance;
                 }
-                else {
+                else
+                {
                     color.red = 1.0 + spawn_chance;
                     color.green = 0.0;
                     oobject.scale = 0.4 + spawn_chance * 0.4;
                 }
 
-                if(biped) {
-                    if(blocked[i]) {
+                if(biped)
+                {
+                    if(blocked[i])
+                    {
                         invis_if_biped += 0.35;
                         if(invis_if_biped > 1.1) invis_if_biped = 1.1;
                     }
-                    else {
+                    else
+                    {
                         invis_if_biped -= 0.075;
                         if(invis_if_biped < 0.0) invis_if_biped = 0.0;
                     }
                 }
 
-                for(size_t i=0;i<4;i++) {
+                for(size_t i=0;i<4;i++)
+                {
                     oobject.color1[i] = color;
                     oobject.color2[i] = color;
                 }
@@ -401,16 +464,21 @@ static void show_spawns() noexcept {
 /// Function for command chimera_show_spawns
 ChimeraCommandError show_spawns_command(size_t argc, const char **argv) noexcept {
     static auto active = false;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value != active) {
-            if(new_value) {
+        if(new_value != active)
+        {
+            if(new_value)
+            {
                 tickles = -1;
                 total_spawns = 0;
                 add_tick_event(show_spawns);
             }
-            else {
-                for(size_t i=0;i<total_spawns;i++) {
+            else
+            {
+                for(size_t i=0;i<total_spawns;i++)
+                {
                     delete_object(objects[i].object_id);
                 }
                 remove_tick_event(show_spawns);
