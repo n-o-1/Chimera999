@@ -68,7 +68,8 @@ struct HUDMeterColors {
     ColorByte color_at_meter_maximum;
     ColorByte flash_color;
     ColorByte empty_color;
-    struct {
+    struct
+    {
         uint8_t use_min_max_for_state_changes : 1;
         uint8_t interpolate_between_min_max_flash_colors_as_state_changes : 1;
         uint8_t interpolate_color_along_HSV_space : 1;
@@ -102,7 +103,8 @@ struct HUDOverlay {
     uint16_t frame_rate;
     PAD_CHARS(2);
     uint16_t sequence_index;
-    struct {
+    struct
+    {
         uint16_t show_on_flashing : 1;
         uint16_t show_on_empty : 1;
         uint16_t show_on_reload_overheating : 1;
@@ -138,7 +140,8 @@ enum HUDMultitextureWrapMode : uint16_t {
 struct HUDMultitextureOverlay {
     PAD_CHARS(2);
     uint16_t type;
-    enum : uint16_t {
+    enum : uint16_t
+    {
         FRAMEBUFFER_BLEND_ALPHA_BLEND = 0,
         FRAMEBUFFER_BLEND_MULTIPLY,
         FRAMEBUFFER_BLEND_DOUBLE_MULTIPLY,
@@ -156,7 +159,8 @@ struct HUDMultitextureOverlay {
     HUDMultitextureBlendingFunction blending_function_1_to_2;
     PAD_CHARS(2);
 
-    struct {
+    struct
+    {
         float primary_scale_x;
         float primary_scale_y;
         float secondary_scale_x;
@@ -165,7 +169,8 @@ struct HUDMultitextureOverlay {
         float tertiary_scale_y;
     } map_scales;
 
-    struct {
+    struct
+    {
         float primary_offset_x;
         float primary_offset_y;
         float secondary_offset_x;
@@ -174,7 +179,8 @@ struct HUDMultitextureOverlay {
         float tertiary_offset_y;
     } map_offsets;
 
-    struct {
+    struct
+    {
         HaloTagDependency primary;
         HaloTagDependency secondary;
         HaloTagDependency tertiary;
@@ -221,7 +227,8 @@ struct GrenadeHUDInterface {
     PAD_CHARS(0x22);
     GrenadeHUDInterfaceS grenade_hud_background;
     GrenadeHUDInterfaceS total_grenades_background;
-    struct {
+    struct
+    {
         HUDElementPosition position;
         HUDElementColors colors;
         uint8_t maximum_number_of_digits;
@@ -239,13 +246,15 @@ struct GrenadeHUDInterface {
     HUDInterfaceWarningSound<GrenadeHUDInterfaceWarningSoundLatchedTo> *warning_sounds;
     PAD_CHARS(4);
     PAD_CHARS(0x44);
-    struct {
+    struct
+    {
         uint16_t sequence_index;
         uint16_t width_offset;
         AnchorOffset offset_from_reference_corner;
         ColorByte override_icon_color;
         uint8_t frame_rate;
-        struct {
+        struct
+        {
             uint8_t use_text_from_string_list_instead : 1;
             uint8_t override_default_color : 1;
             uint8_t width_Offset_is_absolute_icon_width : 1;
@@ -319,7 +328,8 @@ struct WeaponHUDInterfaceCrosshairOverlay {
     HUDElementColors colors;
     uint16_t frame_rate;
     uint16_t sequence_index;
-    struct {
+    struct
+    {
         uint32_t flashes_when_active : 1;
         uint32_t not_a_sprite : 1;
         uint32_t shows_only_when_zoomed : 1;
@@ -351,7 +361,8 @@ struct WeaponHUDInterfaceOverlayElement {
 static_assert(sizeof(WeaponHUDInterfaceOverlayElement) == 0x68);
 
 struct WeaponHUDInterfaceCrosshair {
-    enum : uint16_t {
+    enum : uint16_t
+    {
         CROSSHAIR_AIM = 0,
         CROSSHAIR_ZOOM,
         CROSSHAIR_CHARGE,
@@ -391,7 +402,8 @@ struct WeaponHUDInterface {
     PAD_BITS(uint8_t, 7);
     PAD_CHARS(0x3);
 
-    struct {
+    struct
+    {
         int16_t total_ammo_cutoff;
         int16_t loaded_ammo_cutoff;
         int16_t heat_cutoff;
@@ -469,9 +481,11 @@ struct UnitHUDInterfaceWarningSoundLatchedTo {
 struct UnitHUDInterfaceAuxiliaryHUDMeter {
     PAD_CHARS(0x14);
     UnitHUDInterfaceBackground background;
-    struct : UnitHUDInterfaceMeterPrelude {
+    struct : UnitHUDInterfaceMeterPrelude
+    {
         float minimum_fraction_cutoff;
-        struct {
+        struct
+        {
             uint16_t show_only_when_active : 1;
             uint16_t flash_once_if_activated_while_disabled : 1;
             PAD_BITS(uint16_t, 14);
@@ -488,7 +502,8 @@ struct UnitHUDInterface {
     PAD_CHARS(0x22);
     UnitHUDInterfaceBackground unit_hud_background;
     UnitHUDInterfaceBackground shield_panel_background;
-    struct : UnitHUDInterfaceMeterPrelude {
+    struct : UnitHUDInterfaceMeterPrelude
+    {
         ColorByte overcharge_minimum_color;
         ColorByte overcharge_maximum_color;
         ColorByte overcharge_flash_color;
@@ -496,7 +511,8 @@ struct UnitHUDInterface {
         PAD_CHARS(0x10);
     } shield_panel_meter;
     UnitHUDInterfaceBackground health_panel_background;
-    struct : UnitHUDInterfaceMeterPrelude {
+    struct : UnitHUDInterfaceMeterPrelude
+    {
         ColorByte medium_health_left_color;
         float maximum_color_health_fraction_cutoff;
         float minumum_color_health_fraction_cutoff;
@@ -506,7 +522,8 @@ struct UnitHUDInterface {
     UnitHUDInterfaceBackground motion_sensor_foreground;
     PAD_CHARS(0x20);
     HUDElementPosition motion_sensor_center;
-    struct {
+    struct
+    {
         HUDAnchor anchor;
         PAD_CHARS(0x22);
         uint32_t overlays_count;
