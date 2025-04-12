@@ -14,7 +14,8 @@ void ChimeraSignature::undo() {
   DWORD b;
   size_t length = this->size();
   if(VirtualProtect(this->i_found_address, length, PAGE_READWRITE, &a) == false) return;
-  for(int i=0;i<length;i++) {
+  for(int i=0;i<length;i++)
+  {
     this->i_found_address[i] = this->i_original_code[i];
   }
   VirtualProtect(this->i_found_address, length, a, &b);
@@ -31,14 +32,17 @@ size_t ChimeraSignature::size() {
 ChimeraSignature::ChimeraSignature(const char *name, const short *signature, size_t signature_length) :
   i_name(name) {
   auto *code = reinterpret_cast<unsigned char *>(FindCode(GetModuleHandle(0), signature, signature_length));
-  if(code) {
+  if(code)
+  {
     this->i_found_address = code;
     this->i_original_code.clear();
-    for(uint32_t i=0;i<signature_length;i++) {
+    for(uint32_t i=0;i<signature_length;i++)
+    {
       this->i_original_code.push_back(code[i]);
     }
   }
-  else {
+  else
+  {
     throw std::exception();
   }
 }
@@ -47,7 +51,8 @@ bool write_code(unsigned char *where, const short *what, size_t length) {
   DWORD old_protect = 0;
   DWORD old_protect_b = 0;
   if(VirtualProtect(where, length, PAGE_READWRITE, &old_protect) == false) return false;
-  for(int i=0;i<length;i++) {
+  for(int i=0;i<length;i++)
+  {
     short x = what[i];
     if(x == -1) continue;
     *(where + i) = static_cast<unsigned char>(x);
