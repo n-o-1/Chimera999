@@ -10,7 +10,8 @@
 #include "../../math/data_types.h"
 
 static void sniper_fix() noexcept {
-    try {
+    try
+    {
         auto &tag = HaloTag::lookup("wphi", "weapons\\sniper rifle\\sniper rifle");
         WeaponHUDInterface &hud_interface = *reinterpret_cast<WeaponHUDInterface *>(tag.data);
         assert_or_bail(hud_interface.anchor == ANCHOR_TOP_LEFT);
@@ -46,14 +47,17 @@ static void sniper_fix() noexcept {
         int16_t right_offset = 0;
         int16_t left_offset = 0;
 
-        if(open_sauce_present()) {
+        if(open_sauce_present())
+        {
             auto &resolution = get_resolution();
             auto ar = static_cast<double>(resolution.width) / resolution.height;
             center_x = 320.0 / (4.0 / 3.0) * ar;
-            if(ar != (4.0 / 3.0)) {
+            if(ar != (4.0 / 3.0))
+            {
                 right_offset = 34;
             }
-            if(ar > (8.0 / 2.76217)) {
+            if(ar > (8.0 / 2.76217))
+            {
                 left_offset = 32;
             }
         }
@@ -79,14 +83,18 @@ static void sniper_fix() noexcept {
 
 ChimeraCommandError sniper_hud_fix_command(size_t argc, const char **argv) noexcept {
     static bool active = false;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value != active) {
+        if(new_value != active)
+        {
             console_out("Changes will apply on next map load.");
-            if(new_value) {
+            if(new_value)
+            {
                 add_map_load_event(sniper_fix, EVENT_PRIORITY_BEFORE);
             }
-            else {
+            else
+            {
                 remove_map_load_event(sniper_fix);
             }
             active = new_value;
