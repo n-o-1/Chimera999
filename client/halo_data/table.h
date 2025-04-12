@@ -191,7 +191,8 @@ struct BaseHaloObject {
     char region_permutation_index[8];
     ColorRGB color1[4];
     ColorRGB color2[4];
-    struct s_header_block_ref_node_orientation {
+    struct s_header_block_ref_node_orientation
+    {
         uint16_t size;
         uint16_t offset;
     } header_block_ref_node_orientation[3];
