@@ -8,7 +8,8 @@
 ScriptingGlobal read_global(const char *global_name) noexcept {
     static auto *haddr = get_signature("hs_globals_sig").address();
     ScriptingGlobal sg;
-    if(haddr) {
+    if(haddr)
+    {
         auto *hs_globals = *reinterpret_cast<char **>(haddr + 7);
         auto &first_global = *reinterpret_cast<uint32_t *>(haddr + 1);
         auto *hs_globals_table = *reinterpret_cast<char **>(hs_globals);
@@ -17,12 +18,15 @@ ScriptingGlobal read_global(const char *global_name) noexcept {
         auto *scenario_tag = HaloTag::from_id(*reinterpret_cast<HaloTagID *>(0x40440004)).data;
         auto &globals_count = *reinterpret_cast<uint32_t *>(scenario_tag + 0x4A8);
         auto *globals_address = *reinterpret_cast<char **>(scenario_tag + 0x4A8 + 4);
-        for(uint32_t i=0;i<globals_count;i++) {
+        for(uint32_t i=0;i<globals_count;i++)
+        {
             auto *global = globals_address + i * 92;
-            if(strcmp(global,global_name) == 0) {
+            if(strcmp(global,global_name) == 0)
+            {
                 auto &global_type = *reinterpret_cast<uint16_t *>(global + 0x20);
                 auto *location = hs_table + (i + first_global) * 8;
-                switch(global_type) {
+                switch(global_type)
+                {
                     case 0:
                     case 1:
                     case 2:
@@ -57,7 +61,8 @@ ScriptingGlobal read_global(const char *global_name) noexcept {
 
 bool set_global(const char *global_name, ScriptingGlobalValue value) noexcept {
     static auto *haddr = get_signature("hs_globals_sig").address();
-    if(haddr) {
+    if(haddr)
+    {
         auto *hs_globals = *reinterpret_cast<char **>(haddr + 7);
         auto &first_global = *reinterpret_cast<uint32_t *>(haddr + 1);
         auto *hs_globals_table = *reinterpret_cast<char **>(hs_globals);
@@ -66,12 +71,15 @@ bool set_global(const char *global_name, ScriptingGlobalValue value) noexcept {
         auto *scenario_tag = HaloTag::from_id(*reinterpret_cast<HaloTagID *>(0x40440004)).data;
         auto &globals_count = *reinterpret_cast<uint32_t *>(scenario_tag + 0x4A8);
         auto *globals_address = *reinterpret_cast<char **>(scenario_tag + 0x4A8 + 4);
-        for(uint32_t i=0;i<globals_count;i++) {
+        for(uint32_t i=0;i<globals_count;i++)
+        {
             auto *global = globals_address + i * 92;
-            if(strcmp(global,global_name) == 0) {
+            if(strcmp(global,global_name) == 0)
+            {
                 auto &global_type = *reinterpret_cast<uint16_t *>(global + 0x20);
                 auto *location = hs_table + (i + first_global) * 8;
-                switch(global_type) {
+                switch(global_type)
+                {
                     case 0:
                     case 1:
                     case 2:
