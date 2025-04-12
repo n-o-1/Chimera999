@@ -25,23 +25,30 @@ uint32_t maps_count() noexcept {
 }
 
 static void on_load() noexcept {
-    if(get_map_header().engine_type == 7) {
+    if(get_map_header().engine_type == 7)
+    {
         HaloTag *tags = *reinterpret_cast<HaloTag **>(0x40440000);
-        for(size_t i=0;i<*reinterpret_cast<uint32_t *>(0x4044000C);i++) {
-            if(tags[i].tag_class == 0x6269746D) {
+        for(size_t i=0;i<*reinterpret_cast<uint32_t *>(0x4044000C);i++)
+        {
+            if(tags[i].tag_class == 0x6269746D)
+            {
                 auto *bitmaps = *reinterpret_cast<char **>(tags[i].data + 0x60 + 4);
-                for(uint32_t b=0;b<*reinterpret_cast<uint32_t *>(tags[i].data + 0x60);b++) {
+                for(uint32_t b=0;b<*reinterpret_cast<uint32_t *>(tags[i].data + 0x60);b++)
+                {
                     auto *bitmap = bitmaps + b * 0x30;
                     if((bitmap[0xF] & 1) == 0) continue;
                     *reinterpret_cast<uint32_t *>(bitmap + 0x18) += boffset;
                 }
             }
-            else if(tags[i].tag_class == 0x736E6421) {
+            else if(tags[i].tag_class == 0x736E6421)
+            {
                 auto *pitch_ranges = *reinterpret_cast<char **>(tags[i].data + 0x98 + 4);
-                for(uint32_t r=0;r<*reinterpret_cast<uint32_t *>(tags[i].data + 0x98);r++) {
+                for(uint32_t r=0;r<*reinterpret_cast<uint32_t *>(tags[i].data + 0x98);r++)
+                {
                     auto *range = pitch_ranges + r * 0x48;
                     auto *permutations = *reinterpret_cast<char **>(range + 0x3C + 4);
-                    for(uint32_t p=0;p<*reinterpret_cast<uint32_t *>(range + 0x3C);p++) {
+                    for(uint32_t p=0;p<*reinterpret_cast<uint32_t *>(range + 0x3C);p++)
+                    {
                         auto *permutation = permutations + p * 0x7C;
                         if((permutation[0x44] & 1) == 0) continue;
                         *reinterpret_cast<uint32_t *>(permutation + 0x48) += soffset;
@@ -57,20 +64,25 @@ const char *sounds_path = "chimera\\c_sounds";
 
 uint32_t open_or_create(const char *chimera_path, const char *pc_path, const char *ce_path, bool create_if_not_exists) {
     FILE *b = fopen(chimera_path, "r");
-    if(b) {
+    if(b)
+    {
         fseek(b, -4, SEEK_END);
         uint32_t offset;
         fread(&offset, sizeof(boffset), 1, b);
         fclose(b);
         return offset;
     }
-    else if(create_if_not_exists) {
+    else if(create_if_not_exists)
+    {
         FILE *sce = fopen(ce_path, "rb");
-        if(sce) {
+        if(sce)
+        {
             FILE *spc = fopen(pc_path, "rb");
-            if(spc) {
+            if(spc)
+            {
                 FILE *sch = fopen(chimera_path, "wb");
-                if(sch) {
+                if(sch)
+                {
                     fseek(sce, 0, SEEK_END);
                     fseek(spc, 0, SEEK_END);
                     size_t sce_size = ftell(sce);
@@ -102,13 +114,15 @@ void setup_pc_map_compatibility() noexcept {
     boffset = open_or_create("maps\\chimera\\c_bitmaps.map", "maps\\chimera\\bitmaps.map", "maps\\bitmaps.map", true);
     soffset = open_or_create("maps\\chimera\\c_sounds.map", "maps\\chimera\\sounds.map", "maps\\sounds.map", true);
 
-    if(boffset && soffset) {
+    if(boffset && soffset)
+    {
         write_code_any_value(get_signature("compare_ce_sig").address() + 7, static_cast<unsigned short>(0x9090));
         write_code_any_value(get_signature("compare_ce_load_sig").address() + 7, static_cast<unsigned char>(0xEB));
         unsigned char nop[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
         write_code_c(get_signature("pc_map_compatibility_sig").address(), nop);
 
-        unsigned char mod[] = {
+        unsigned char mod[] =
+        {
             0x89, 0x3D, 0xFF, 0xFF, 0xFF, 0xFF,
             0x60,
             0xE8, 0x00, 0x00, 0x00, 0x00,
