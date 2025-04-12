@@ -25,13 +25,16 @@ void fov_fix_ss() noexcept {
 }
 
 ChimeraCommandError fov_fix_command(size_t argc, const char **argv) noexcept {
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(fov_fix_active != new_value) {
+        if(fov_fix_active != new_value)
+        {
             auto &fov_fix_sig = get_signature("fov_fix_sig");
             auto &fov_disparity_3_sig = get_signature("fov_disparity_3_sig");
             fov_fix_active = new_value;
-            if(new_value) {
+            if(new_value)
+            {
                 const unsigned char nop[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
                 write_code_c(fov_fix_sig.address(), nop);
                 add_frame_event(fix_disparity);
@@ -44,7 +47,8 @@ ChimeraCommandError fov_fix_command(size_t argc, const char **argv) noexcept {
 
                 fov_fix_ss();
             }
-            else {
+            else
+            {
                 fov_fix_sig.undo();
                 fov_disparity_3_sig.undo();
                 auto *fov_disparity_1_addr = get_signature("fov_disparity_1_sig").address();
@@ -54,7 +58,8 @@ ChimeraCommandError fov_fix_command(size_t argc, const char **argv) noexcept {
                 **reinterpret_cast<uint16_t **>(fov_disparity_2_addr + 3) = 8;
                 **reinterpret_cast<uint16_t **>(fov_disparity_2_addr + 0xB + 3) = get_resolution().width - 8;
                 extern bool simple_score_screen_active;
-                if(!simple_score_screen_active) {
+                if(!simple_score_screen_active)
+                {
                     get_signature("ss_elements_sig").undo();
                 }
                 remove_frame_event(fix_disparity);
