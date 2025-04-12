@@ -33,27 +33,34 @@ HaloTag &HaloTag::from_id(const HaloTagID &tag_id) noexcept {
 
 HaloTag &HaloTag::lookup(const char *tag_class, const char *tag_path) {
     uint32_t tag_class_int;
-    if(strlen(tag_class) > 4) {
+    if(strlen(tag_class) > 4)
+    {
         tag_class_int = HaloCE::tag_class_int_from_string(tag_class);
     }
-    else {
+    else
+    {
         char tag_class_buf[5] = {};
         bool spaces = false;
-        for(int i=0;i<4;i++) {
-            if(spaces || tag_class[i] == 0x0) {
+        for(int i=0;i<4;i++)
+        {
+            if(spaces || tag_class[i] == 0x0)
+            {
                 tag_class_buf[3 - i] = 0x20;
                 spaces = true;
             }
-            else {
+            else
+            {
                 tag_class_buf[3 - i] = tag_class[i];
             }
         }
         tag_class_int = *reinterpret_cast<uint32_t *>(tag_class_buf);
     }
 
-    for(size_t i=0;i<*reinterpret_cast<uint32_t *>(0x4044000C);i++) {
+    for(size_t i=0;i<*reinterpret_cast<uint32_t *>(0x4044000C);i++)
+    {
         auto &tag = HaloTag::from_id(i);
-        if(tag.tag_class == tag_class_int && strcmp(tag.path, tag_path) == 0) {
+        if(tag.tag_class == tag_class_int && strcmp(tag.path, tag_path) == 0)
+        {
             return tag;
         }
     }
