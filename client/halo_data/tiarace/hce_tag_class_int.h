@@ -2,7 +2,8 @@
 #include <stdint.h>
 
 namespace HaloCE {
-    enum TagClassInt : uint32_t {
+    enum TagClassInt : uint32_t
+    {
         TAG_CLASS_INT_ACTOR = 0x61637472,
         TAG_CLASS_INT_ACTOR_VARIANT = 0x61637476,
         TAG_CLASS_INT_ANTENNA = 0x616E7421,
