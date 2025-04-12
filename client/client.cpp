@@ -96,11 +96,13 @@ static void init() {
     read_init_file("chimerainit.txt", "chimerainit.txt");
     sprintf(z,"%s\\chimera\\chimerainit.txt", halo_path());
     auto *f = fopen(z, "r");
-    if(f) {
+    if(f)
+    {
         fclose(f);
         read_init_file(z, "[-path]/chimerainit.txt");
     }
-    else {
+    else
+    {
         std::ofstream init(z);
         init << "###" << std::endl;
         init << "### chimerainit.txt" << std::endl;
@@ -125,8 +127,10 @@ void initialize_client() noexcept {
     commands = new std::vector<ChimeraCommand>;
     signatures = new std::vector<ChimeraSignature>;
     missing_signatures = new std::vector<std::string>;
-    if(!find_required_signatures()) {
-        for(size_t i=0;i<(*missing_signatures).size();i++) {
+    if(!find_required_signatures())
+    {
+        for(size_t i=0;i<(*missing_signatures).size();i++)
+        {
             char message[256] = {};
             sprintf(message, "Could not find %s signature. Make sure you're using Halo Custom Edition version 1.10.", (*missing_signatures)[i].data());
             MessageBox(NULL, message, "Chimera cannot load", MB_OK);
@@ -138,15 +142,16 @@ void initialize_client() noexcept {
     initialize_rcon_message();
     add_tick_event(init);
     add_tick_event(camo_fix);
+    add_map_load_event(tps_check_svr);
     dart_fix();
-
     enable_descope_fix();
 
     QueryPerformanceFrequency(&performance_frequency);
 
     //add_tick_event(set_contributors);
 
-    if(find_magnetism_signatures()) {
+    if(find_magnetism_signatures())
+    {
         fix_magnetism();
     }
 
@@ -311,6 +316,12 @@ void initialize_client() noexcept {
          "Turn HAC2's HUD scaling fix on/off. The default is on\n\n"
          "Syntax:\n"
          "  - hac_widescreen [0/1]"
+    , 0, 0, true, false);
+
+    (*commands).emplace_back("chimera_hac2_scope_blur", hac2_scope_blur_command, "hac2",
+         "Turn zoom scope blur mask on/off. The default is on\n\n"
+         "Syntax:\n"
+         "  - scope_blur [0/1]"
     , 0, 0, true, false);
 
     (*commands).emplace_back("chimera_hac2_queue", hac2_queue_command, "hac2",
@@ -623,7 +634,8 @@ void initialize_client() noexcept {
 
     if(find_fast_startup_sigs()) setup_fast_startup();
 
-    if(custom_keystone_in_use()) {
+    if(custom_keystone_in_use())
+    {
       if(find_pc_map_compat_sigs()) setup_pc_map_compatibility();
       if(find_keystone_sigs()) setup_keystone_override();
     }
@@ -635,7 +647,8 @@ void initialize_client() noexcept {
 
 void uninitialize_client() noexcept {
     destroy_lua();
-    for(size_t i=0;i<signatures->size();i++) {
+    for(size_t i=0;i<signatures->size();i++)
+    {
         (*signatures)[i].undo();
     }
     delete signatures;
