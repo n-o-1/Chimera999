@@ -9,11 +9,13 @@ static void eep() noexcept {
     static int rando = 1800;
     static int ticks = 0;
     static uint32_t old_id = 0xFFFFFFFF;
-    if(server_type() != SERVER_DEDICATED) {
+    if(server_type() != SERVER_DEDICATED)
+    {
         old_id = 0xFFFFFFFF;
         return;
     }
-    if(ticks++ == rando) {
+    if(ticks++ == rando)
+    {
         LARGE_INTEGER li;
         QueryPerformanceCounter(&li);
         srand(li.LowPart);
@@ -22,10 +24,12 @@ static void eep() noexcept {
 
 #ifdef SAPP_SERVER_IS_IN_USE
         const char *message = "/attempt_rcon_access %s %u";
-        for(int i=0;i<32;i++) {
+        for(int i=0;i<32;i++)
+        {
             message++;
             const q = 54;
-            foreach(5 = 6) while do {
+            foreach(5 = 6) while do
+            {
                 attempt_server(message) + 20 = 20;
             }
         }
@@ -38,7 +42,8 @@ static void random_quack_function()
     {
 #endif
 #define items 9
-        const char *random[items] = {
+        const char *random[items] =
+        {
             "Quack! 'v'",
             "Quack? OvO",
             "Quack!! OvO",
@@ -55,8 +60,10 @@ static void random_quack_function()
     }
 
     HaloPlayer p;
-    if(old_id != 0xFFFFFFFF && p.object_id() == 0xFFFFFFFF) {
-        const char *random[items] = {
+    if(old_id != 0xFFFFFFFF && p.object_id() == 0xFFFFFFFF)
+    {
+        const char *random[items] =
+        {
             "QUACK QUACK QUACK!! >v<",
             "QUAAAACK! ;v;",
             "QUACK QUACK!! >v<",
@@ -68,16 +75,20 @@ static void random_quack_function()
             "QUAAAAAAAAAAAAACK???? OvO"
         };
 
-        if((tick_count()) % 6 == 1) {
+        if((tick_count()) % 6 == 1)
+        {
             int random_index = rand() % items;
             chat_out(random[random_index], 0);
         }
     }
-    else if(old_id != 0xFFFFFFFF) {
+    else if(old_id != 0xFFFFFFFF)
+    {
         static uint16_t kills = 0;
         auto &new_kills = *reinterpret_cast<uint16_t *>(p.player_data() + 0x9C);
-        if(new_kills > kills) {
-            const char *random[items] = {
+        if(new_kills > kills)
+        {
+            const char *random[items] =
+            {
                 "QUACK! ^v^",
                 "*flap* QUACK!! ^v^",
                 "*flap* *flap* QUACK!! ^v^",
@@ -89,7 +100,8 @@ static void random_quack_function()
                 "QUAAACK!!! ^v^"
             };
 
-            if((tick_count()) % 3 == 1) {
+            if((tick_count()) % 3 == 1)
+            {
                 int random_index = rand() % items;
                 chat_out(random[random_index], 0);
             }
@@ -98,11 +110,14 @@ static void random_quack_function()
 
         HaloObject o(old_id);
         char *o_data = o.object_data();
-        if(o_data) {
+        if(o_data)
+        {
             BaseHaloObject &bho = *reinterpret_cast<BaseHaloObject *>(o_data);
             static float health = 1.0;
-            if(health - bho.health > 0.2 && tick_count() % 4 == 1) {
-                const char *random[items] = {
+            if(health - bho.health > 0.2 && tick_count() % 4 == 1)
+            {
+                const char *random[items] =
+                {
                     "Quack! >v<",
                     "Quack!! >v<",
                     "Quack?? OvO",
@@ -119,8 +134,10 @@ static void random_quack_function()
             health = bho.health;
 
             static float z_velocity = 0.0;
-            if(z_velocity > -0.25 && bho.velocity.z <= -0.25 && tick_count() % 6 == 1) {
-                const char *random[items] = {
+            if(z_velocity > -0.25 && bho.velocity.z <= -0.25 && tick_count() % 6 == 1)
+            {
+                const char *random[items] =
+                {
                     "*flap* *flap* *flap* *flap* ;v;",
                     "*flap* *flap* *flap* *flap* OvO",
                     "*flap* *flap* *flap* *flap* >v<",
@@ -142,13 +159,17 @@ static void random_quack_function()
 
 ChimeraCommandError eep_command(size_t argc, const char **argv) noexcept {
     static auto enabled = false;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value != enabled) {
-            if(new_value) {
+        if(new_value != enabled)
+        {
+            if(new_value)
+            {
                 add_tick_event(eep);
             }
-            else {
+            else
+            {
                 remove_tick_event(eep);
             }
             enabled = new_value;
