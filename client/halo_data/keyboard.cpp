@@ -9,7 +9,8 @@
 
 KeyboardKeys &get_keyboard_keys() noexcept {
     static KeyboardKeys *buffer = nullptr;
-    if(!buffer) {
+    if(!buffer)
+    {
         buffer = *reinterpret_cast<KeyboardKeys **>(get_signature("keyboard_keys_sig").address() + 1);
     }
     return *buffer;
@@ -17,21 +18,26 @@ KeyboardKeys &get_keyboard_keys() noexcept {
 
 void check_keys() noexcept {
     extern bool keystone_enabled;
-    if(server_type() != SERVER_NONE && !console_is_out() && keystone_enabled) {
+    if(server_type() != SERVER_NONE && !console_is_out() && keystone_enabled)
+    {
         static char chat_key = 0;
-        if(get_keyboard_keys().t) {
+        if(get_keyboard_keys().t)
+        {
             chat_key = 1;
             console_is_out(true, "chimera_chat all ");
         }
-        else if(get_keyboard_keys().y) {
+        else if(get_keyboard_keys().y)
+        {
             chat_key = 2;
             console_is_out(true, "chimera_chat team ");
         }
-        else if(get_keyboard_keys().h) {
+        else if(get_keyboard_keys().h)
+        {
             chat_key = 3;
             console_is_out(true, player_can_use_vehicle_chat() ? "chimera_chat vehicle " : "chimera_chat team ");
         }
-        else {
+        else
+        {
             chat_key = 0;
         }
     }
