@@ -11,24 +11,30 @@ static void set_wireframe(bool on) {
 }
 
 static void auto_hide_wireframe() {
-    if(server_type() == SERVER_DEDICATED) {
+    if(server_type() == SERVER_DEDICATED)
+    {
         execute_chimera_command("chimera_wireframe false", true);
     }
 }
 
 ChimeraCommandError wireframe_command(size_t argc, const char **argv) noexcept {
     static auto enabled = false;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value != enabled) {
-            if(new_value) {
-                if(server_type() == SERVER_DEDICATED) {
+        if(new_value != enabled)
+        {
+            if(new_value)
+            {
+                if(server_type() == SERVER_DEDICATED)
+                {
                     console_out_error("This command cannot be used on a dedicated server.");
                     return CHIMERA_COMMAND_ERROR_FAILURE;
                 }
                 add_tick_event(auto_hide_wireframe);
             }
-            else {
+            else
+            {
                 remove_tick_event(auto_hide_wireframe);
             }
             set_wireframe(new_value);
