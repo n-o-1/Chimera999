@@ -197,6 +197,7 @@ These commands give a description of available Hac2 commands and their usage.
 * `chimera_hac2_optic` - Display HAC2 Optic commands with descriptions and usages.
 * `chimera_hac2_queue` - Display HAC2 queue command with description and usage.
 * `chimera_hac2_recalculate` - Display HAC2 recalculate command with description and usage.
+* `chimera_hac2_scope_blur` - Display HAC2 scope blur command with description and usage.
 * `chimera_hac2_timer` - Display HAC2 timer commands with descriptions and usages.
 * `chimera_hac2_widescreen` - Display HAC2 widescreen command with description and usage.
 
