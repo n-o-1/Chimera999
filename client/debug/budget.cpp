@@ -16,7 +16,8 @@ static size_t frames_per_tick[buffer_size];
 static double s_per_tick[buffer_size];
 
 static void buffer_ticks() noexcept {
-    for(size_t i=buffer_size - 1;i>0;i--) {
+    for(size_t i=buffer_size - 1;i>0;i--)
+    {
         frames_per_tick[i] = frames_per_tick[i-1];
         s_per_tick[i] = s_per_tick[i-1];
     }
@@ -30,22 +31,28 @@ static void change_colorargb(double val, double max, ColorARGB &color, bool inve
     color.alpha = 1.0;
     color.blue = 0.0;
     double halfway = max / 2.0;
-    if(!invert) {
-        if(val <= halfway) {
+    if(!invert)
+    {
+        if(val <= halfway)
+        {
             color.green = 1.0;
             color.red = val / halfway;
         }
-        else {
+        else
+        {
             color.red = 1.0;
             color.green = 1.0 - (val - halfway) / halfway;
         }
     }
-    else {
-        if(val <= halfway) {
+    else
+    {
+        if(val <= halfway)
+        {
             color.red = 1.0;
             color.green = val / halfway;
         }
-        else {
+        else
+        {
             color.green = 1.0;
             color.red = 1.0 - (val - halfway) / halfway;
         }
@@ -61,11 +68,13 @@ static void change_colorargb_d(double val, double base, ColorARGB &color, double
     color.blue = 0.0;
     double d_from_m = fabs(val - base);
     double halfway = max_distance / 2.0;
-    if(d_from_m < halfway) {
+    if(d_from_m < halfway)
+    {
         color.green = 1.0;
         color.red = d_from_m / halfway;
     }
-    else {
+    else
+    {
         color.red = 1.0;
         color.green = 1.0 - (d_from_m - halfway) / halfway;
     }
@@ -87,13 +96,15 @@ static void show_budget() noexcept {
     double total_time = 0;
     size_t total_frames = 0;
 
-    for(size_t i=0;i<buffer_size;i++) {
+    for(size_t i=0;i<buffer_size;i++)
+    {
         total_time += s_per_tick[i];
         total_frames += frames_per_tick[i];
     }
 
     if(!console_is_out()) {
-        for(size_t i=0;i<30;i++) {
+        for(size_t i=0;i<30;i++)
+        {
             console_out("|n");
         }
 
@@ -168,8 +179,10 @@ static void show_budget() noexcept {
         console_out(s,f);
         clear = true;
     }
-    else if(clear) {
-        for(size_t i=0;i<30;i++) {
+    else if(clear)
+    {
+        for(size_t i=0;i<30;i++)
+        {
             console_out("|n");
         }
         clear = false;
@@ -183,14 +196,17 @@ ChimeraCommandError budget_command(size_t argc, const char **argv) noexcept {
     if(argc == 1) {
         auto new_value = atoi(argv[0]);
         if(new_value > 2 || new_value < 0) new_value = 0;
-        if(new_value != active) {
-            if(new_value && !active) {
+        if(new_value != active)
+        {
+            if(new_value && !active)
+            {
                 add_tick_event(show_budget);
                 add_frame_event(calculate_fps);
                 memset(frames_per_tick,0,sizeof(frames_per_tick));
                 memset(s_per_tick,0,sizeof(s_per_tick));
             }
-            else if(new_value == 0) {
+            else if(new_value == 0)
+            {
                 remove_frame_event(calculate_fps);
                 remove_tick_event(show_budget);
             }
@@ -216,7 +232,8 @@ ChimeraCommandError player_info_command(size_t argc, const char **argv) noexcept
     auto object_id = player.object_id();
     auto object = HaloObject(object_id);
     auto *object_data = object.object_data();
-    if(object_data) {
+    if(object_data)
+    {
         console_out(std::string("Player object ID: ") + int_to_hex(object_id));
         console_out(std::string("Player object data address: ") + int_to_hex(object_data));
     }
