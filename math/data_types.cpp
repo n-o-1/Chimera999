@@ -73,26 +73,32 @@ Quaternion::Quaternion() noexcept {};
 // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 Quaternion::Quaternion(const RotationMatrix &matrix) noexcept {
     float tr = matrix.v[0].x + matrix.v[1].y + matrix.v[2].z;
-    if(tr > 0) {
+    if(tr > 0)
+    {
         float S = sqrt(tr+1.0) * 2; // S=4*qw
         this->w = 0.25 * S;
         this->x = (matrix.v[2].y - matrix.v[1].z) / S;
         this->y = (matrix.v[0].z - matrix.v[2].x) / S;
         this->z = (matrix.v[1].x - matrix.v[0].y) / S;
     }
-    else if((matrix.v[0].x > matrix.v[1].y) & (matrix.v[0].x > matrix.v[2].z)) {
+    else if((matrix.v[0].x > matrix.v[1].y) & (matrix.v[0].x > matrix.v[2].z))
+    {
         float S = sqrt(1.0 + matrix.v[0].x - matrix.v[1].y - matrix.v[2].z) * 2; // S=4*qx
         this->w = (matrix.v[2].y - matrix.v[1].z) / S;
         this->x = 0.25 * S;
         this->y = (matrix.v[0].y + matrix.v[1].x) / S;
         this->z = (matrix.v[0].z + matrix.v[2].x) / S;
-    } else if(matrix.v[1].y > matrix.v[2].z) {
+    }
+    else if(matrix.v[1].y > matrix.v[2].z)
+    {
         float S = sqrt(1.0 + matrix.v[1].y - matrix.v[0].x - matrix.v[2].z) * 2; // S=4*qy
         this->w = (matrix.v[0].z - matrix.v[2].x) / S;
         this->x = (matrix.v[0].y + matrix.v[1].x) / S;
         this->y = 0.25 * S;
         this->z = (matrix.v[1].z + matrix.v[2].y) / S;
-    } else {
+    }
+    else
+    {
         float S = sqrt(1.0 + matrix.v[2].z - matrix.v[0].x - matrix.v[1].y) * 2; // S=4*qz
         this->w = (matrix.v[1].x - matrix.v[0].y) / S;
         this->x = (matrix.v[0].z + matrix.v[2].x) / S;
@@ -150,7 +156,8 @@ void interpolate_quat(const Quaternion &in_before, const Quaternion &in_after, Q
     auto y0 = in_after.y;
     auto z0 = in_after.z;
     float cos_half_theta = w0*w1 + x0*x1 + y0*y1 + z0*z1;
-    if(cos_half_theta < 0) {
+    if(cos_half_theta < 0)
+    {
         w0*=-1;
         x0*=-1;
         y0*=-1;
@@ -160,10 +167,12 @@ void interpolate_quat(const Quaternion &in_before, const Quaternion &in_after, Q
     if(cos_half_theta < 0.01) return;
 
     float half_theta;
-    if(fabs(cos_half_theta) >= 1.0) {
+    if(fabs(cos_half_theta) >= 1.0)
+    {
         half_theta = 0.0;
     }
-    else {
+    else
+    {
         half_theta = acos(cos_half_theta);
     }
 
@@ -173,7 +182,8 @@ void interpolate_quat(const Quaternion &in_before, const Quaternion &in_after, Q
 
     float r0 = 1 - scale;
     float r1 = scale;
-    if(sin_half_theta > 0.00001) {
+    if(sin_half_theta > 0.00001)
+    {
         r0 = sin((1 - scale) * half_theta) / sin_half_theta;
         r1 = sin(scale * half_theta) / sin_half_theta;
     }
@@ -205,17 +215,20 @@ void interpolate_vector_rotation(const Vector3D &before, const Vector3D &after, 
 
     float a,b,c;
     float donegative = 1;
-    if(highest == 0) {
+    if(highest == 0)
+    {
         a = xr;
         b = yr;
         c = zr;
     }
-    else if(highest == 1) {
+    else if(highest == 1)
+    {
         a = yr;
         b = xr;
         c = zr;
     }
-    else {
+    else
+    {
         a = zr;
         b = yr;
         c = xr;
@@ -224,13 +237,16 @@ void interpolate_vector_rotation(const Vector3D &before, const Vector3D &after, 
 
     a = sqrt(fabs(radius*radius - b*b - c*c)) * donegative;
 
-    if(highest == 0) {
+    if(highest == 0)
+    {
         xr = a;
     }
-    else if(highest == 1) {
+    else if(highest == 1)
+    {
         yr = a;
     }
-    else if(highest == 2) {
+    else if(highest == 2)
+    {
         zr = a;
     }
 }
