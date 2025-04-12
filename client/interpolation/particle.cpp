@@ -59,15 +59,18 @@ void do_particle_interpolation() noexcept {
     auto tick_now = tick_count();
 
     auto &particle_table = get_particle_table();
-    if(tick_before != tick_now) {
+    if(tick_before != tick_now)
+    {
         tick_before = tick_now;
         particles_count = particle_table.size;
         if(particles_count > 1024) particles_count = 1024;
         auto *live_particles = reinterpret_cast<Particle *>(particle_table.first);
         memset(particles_buffer_0,0,sizeof(particles_buffer_0));
-        for(uint32_t i=0;i<1024;i++) {
+        for(uint32_t i=0;i<1024;i++)
+        {
             particles_buffer_0[i].position = live_particles[i].position;
-            if((live_particles[i].unknown0 & 0xFFFF) != 0) {
+            if((live_particles[i].unknown0 & 0xFFFF) != 0)
+            {
                 if(distance_squared(particles_buffer_0[i].position, particles_buffer_1[i].position) > 0.45) continue;
                 if(live_particles[i].position.x != particles_buffer_intermediate[i].position.x ||
                 live_particles[i].position.y != particles_buffer_intermediate[i].position.y ||
@@ -77,7 +80,8 @@ void do_particle_interpolation() noexcept {
         }
     }
     auto *live_particles = reinterpret_cast<Particle *>(particle_table.first);
-    for(uint32_t i=0;i<1024;i++) {
+    for(uint32_t i=0;i<1024;i++)
+    {
         if(!particles_buffer_0[i].valid || !particles_buffer_1[i].valid) continue;
         extern float interpolation_tick_progress;
         interpolate_vector(particles_buffer_1[i].position, particles_buffer_0[i].position, live_particles[i].position, interpolation_tick_progress);
@@ -87,7 +91,8 @@ void do_particle_interpolation() noexcept {
 void on_particle_physics_before() noexcept {
     auto &particle_table = get_particle_table();
     auto *live_particles = reinterpret_cast<Particle *>(particle_table.first);
-    for(uint32_t i=0;i<1024;i++) {
+    for(uint32_t i=0;i<1024;i++)
+    {
         if(!particles_buffer_0[i].valid) continue;
         live_particles[i].position = particles_buffer_0[i].position;
     }
@@ -97,7 +102,8 @@ void on_particle_physics_before() noexcept {
 void on_particle_physics_after() noexcept {
     auto &particle_table = get_particle_table();
     auto *live_particles = reinterpret_cast<Particle *>(particle_table.first);
-    for(uint32_t i=0;i<1024;i++) {
+    for(uint32_t i=0;i<1024;i++)
+    {
         particles_buffer_intermediate[i].position = live_particles[i].position;
     }
 }
