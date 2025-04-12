@@ -36,7 +36,6 @@ struct MapHeader {
 
 MapHeader &get_map_header() noexcept;
 
-
 struct MapIndex {
     const char *file_name;
     uint32_t loaded;
