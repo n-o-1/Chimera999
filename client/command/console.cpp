@@ -24,43 +24,52 @@ LARGE_INTEGER last_time_rcon_was_used;
 
 static void read_command() noexcept {
     block_error();
-    if(strlen(console_text) > 127) {
+    if(strlen(console_text) > 127)
+    {
         unblock_error();
         return;
     }
-    switch(execute_chimera_command(console_text, false, true)) {
-        case CHIMERA_COMMAND_ERROR_NOT_ENOUGH_ARGUMENTS: {
+    switch(execute_chimera_command(console_text, false, true))
+    {
+        case CHIMERA_COMMAND_ERROR_NOT_ENOUGH_ARGUMENTS:
+        {
             auto &f = find_chimera_command(console_text);
             char text[256] = {};
             sprintf(text,"Error: Function %s takes at least %u argument%s.", f.name(), f.min_args(), f.min_args() == 1 ? "" : "s");
             console_out_error(text);
             break;
         }
-        case CHIMERA_COMMAND_ERROR_TOO_MANY_ARGUMENTS: {
+        case CHIMERA_COMMAND_ERROR_TOO_MANY_ARGUMENTS:
+        {
             auto &f = find_chimera_command(console_text);
             char text[256] = {};
             sprintf(text,"Error: Function %s takes no more than %u argument%s.", f.name(), f.max_args(), f.max_args() == 1 ? "" : "s");
             console_out_error(text);
             break;
         }
-        case CHIMERA_COMMAND_ERROR_UNSUPPORTED: {
+        case CHIMERA_COMMAND_ERROR_UNSUPPORTED:
+        {
             auto &f = find_chimera_command(console_text);
             char text[256] = {};
             sprintf(text,"Error: Function %s is unsupported on your Halo client.", f.name());
             console_out_error(text);
             break;
         }
-        case CHIMERA_COMMAND_ERROR_COMMAND_NOT_FOUND: {
+        case CHIMERA_COMMAND_ERROR_COMMAND_NOT_FOUND:
+        {
             extern bool on_command_lua(const char *command);
             auto command = split_arguments(console_text, true);
             bool rcon = command[0] == "rcon";
-            if(rcon) {
+            if(rcon)
+            {
                 QueryPerformanceCounter(&last_time_rcon_was_used);
             }
-            if(!rcon && !on_command_lua(console_text)) {
+            if(!rcon && !on_command_lua(console_text))
+            {
                 console_text[0] = 0;
             }
-            else {
+            else
+            {
                 unblock_error();
             }
             break;
@@ -78,9 +87,11 @@ void initialize_console() noexcept {
 }
 
 bool console_is_out(int change, const char *with_text) noexcept {
-    if(change != -1) {
+    if(change != -1)
+    {
         reinterpret_cast<void (*)(int out)>(get_signature("toggle_console_sig").address())(change ? 1 : 2);
-        if(change == 1 && with_text) {
+        if(change == 1 && with_text)
+        {
             auto len = strlen(with_text);
             memcpy(console_text, with_text, len + 1);
             *reinterpret_cast<short *>(console_text + 0x106) = len;
@@ -107,23 +118,30 @@ static void on_console() {
     auto time_since = counter_time_elapsed(last_frame, now_frame);
     last_frame = now_frame;
     ConsoleEntry *entries = reinterpret_cast<ConsoleEntry *>(table->first);
-    for(size_t i=0;i<table->size;i++) {
-        if(console_is_out()) {
+    for(size_t i=0;i<table->size;i++)
+    {
+        if(console_is_out())
+        {
             entries[i].color.alpha += time_since * 10;
             if(entries[i].color.alpha > 1.0) entries[i].color.alpha = 1.0;
         }
-        else {
-            if(entries[i].frames_out_fade < 0 || entries[i].color.alpha < 0.075) {
+        else
+        {
+            if(entries[i].frames_out_fade < 0 || entries[i].color.alpha < 0.075)
+            {
                 entries[i].color.alpha -= time_since * 10;
                 entries[i].frames_out_fade = -100;
                 if(entries[i].color.alpha < 0.0) entries[i].color.alpha = 0.0;
             }
-            else {
+            else
+            {
                 entries[i].color.alpha -= time_since / 6.0;
-                if(entries[i].color.alpha < 0.80) {
+                if(entries[i].color.alpha < 0.80)
+                {
                     entries[i].color.alpha -= time_since / 3.0;
                 }
-                if(entries[i].color.alpha < 0.0) {
+                if(entries[i].color.alpha < 0.0)
+                {
                     entries[i].color.alpha = 0.0;
                 }
             }
@@ -143,10 +161,13 @@ bool already_set = false;
 
 ChimeraCommandError enable_console_command(size_t argc, const char **argv) noexcept {
     static bool active = true;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         auto new_value = bool_value(argv[0]);
-        if(!already_set && new_value != active) {
-            if(console_is_out()) {
+        if(!already_set && new_value != active)
+        {
+            if(console_is_out())
+            {
                 console_is_out(false);
             }
             **reinterpret_cast<char **>(get_signature("enable_console_sig").address() + 1) = new_value;
