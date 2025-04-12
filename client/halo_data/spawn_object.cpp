@@ -54,7 +54,8 @@ uint32_t spawn_object(const HaloTagID &tag_id, float x, float y, float z, uint32
 
 bool delete_object(uint32_t object_id) noexcept {
     static auto *delete_object_fn = get_signature("delete_object_sig").address() - 10;
-    if(HaloObject(object_id).object_data()) {
+    if(HaloObject(object_id).object_data())
+    {
         asm (
             "pushad;"
             "mov eax, %0;"
