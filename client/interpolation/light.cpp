@@ -49,24 +49,29 @@ void light_before() noexcept {
     auto &light_table = get_light_table();
     auto *lights = reinterpret_cast<Light *>(light_table.first);
 
-    if(tick_now != tick_before) {
+    if(tick_now != tick_before)
+    {
         tick_before = tick_now;
         memcpy(light_buffer_1, light_buffer_0, sizeof(light_buffer_0));
         auto &p = camera_data().position;
-        for(size_t i=0;i<MAX_LIGHTS;i++) {
+        for(size_t i=0;i<MAX_LIGHTS;i++)
+        {
             light_buffer_0[i].some_counter = lights[i].some_counter;
             light_buffer_0[i].valid = light_buffer_0[i].some_counter > light_buffer_1[i].some_counter;
-            if(light_buffer_0[i].valid && chimera_interpolate_setting < 9) {
+            if(light_buffer_0[i].valid && chimera_interpolate_setting < 9)
+            {
                 light_buffer_0[i].valid = distance(p, light_buffer_0[i].position) / zoom_scale() < 20;
             }
-            if(light_buffer_0[i].valid) {
+            if(light_buffer_0[i].valid)
+            {
                 light_buffer_0[i].position = lights[i].position;
                 memcpy(light_buffer_0[i].rotation, lights[i].rotation, sizeof(light_buffer_0[i].rotation));
             }
         }
     }
 
-    for(size_t i=0;i<MAX_LIGHTS;i++) {
+    for(size_t i=0;i<MAX_LIGHTS;i++)
+    {
         if(light_buffer_0[i].valid != true || light_buffer_1[i].valid != true) continue;
         for(int x=0;x<2;x++) interpolate_vector_rotation(light_buffer_1[i].rotation[x], light_buffer_0[i].rotation[x], lights[i].rotation[x], interpolation_tick_progress);
         interpolate_vector(light_buffer_1[i].position, light_buffer_0[i].position, lights[i].position, interpolation_tick_progress);
