@@ -10,15 +10,19 @@ static bool frame_initialized = false;
 static std::vector<Event<event_no_args>> preevents;
 
 void add_preframe_event(event_no_args event_function, EventPriority priority) noexcept {
-    for(size_t i=0;i<preevents.size();i++) {
+    for(size_t i=0;i<preevents.size();i++)
+    {
         if(preevents[i].function == event_function) return;
     }
     if(!frame_initialized) initialize_frame();
     preevents.emplace_back(event_function, priority);
 }
+
 void remove_preframe_event(event_no_args event_function) noexcept {
-    for(size_t i=0;i<preevents.size();i++) {
-        if(preevents[i].function == event_function) {
+    for(size_t i=0;i<preevents.size();i++)
+    {
+        if(preevents[i].function == event_function)
+        {
             preevents.erase(preevents.begin() + i);
             return;
         }
@@ -32,15 +36,19 @@ static void on_preframe() {
 static std::vector<Event<event_no_args>> events;
 
 void add_frame_event(event_no_args event_function, EventPriority priority) noexcept {
-    for(size_t i=0;i<events.size();i++) {
+    for(size_t i=0;i<events.size();i++)
+    {
         if(events[i].function == event_function) return;
     }
     if(!frame_initialized) initialize_frame();
     events.emplace_back(event_function, priority);
 }
+
 void remove_frame_event(event_no_args event_function) noexcept {
-    for(size_t i=0;i<events.size();i++) {
-        if(events[i].function == event_function) {
+    for(size_t i=0;i<events.size();i++)
+    {
+        if(events[i].function == event_function)
+        {
             events.erase(events.begin() + i);
             return;
         }
