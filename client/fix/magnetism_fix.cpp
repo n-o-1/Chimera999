@@ -7,8 +7,10 @@
 
 bool gamepad_plugged_in() noexcept {
     static char *joybutt = *reinterpret_cast<char **>(get_signature("joybutt_sig").address() + 2);
-    for(int i=0;i<8;i++) {
-        if(*reinterpret_cast<uint32_t *>(joybutt + 0x240 * i) != 0xFFFFFFFF) {
+    for(int i=0;i<8;i++)
+    {
+        if(*reinterpret_cast<uint32_t *>(joybutt + 0x240 * i) != 0xFFFFFFFF)
+        {
             return true;
         }
     }
@@ -34,7 +36,8 @@ static void on_gamepad_movement_horizontal() noexcept {
     float &a = movement_info.custom_look_horizontal;
     float &b = movement_info.custom_look_vertical;
     float &c = movement_info.aim_vertical;
-    if(fabs(a) >= deadzone || fabs(b) > deadzone || fabs(c) > deadzone) {
+    if(fabs(a) >= deadzone || fabs(b) > deadzone || fabs(c) > deadzone)
+    {
         m = a;
         if(gamepad_being_used != 1) enable_magnetism_fix();
         gamepad_being_used = 1;
@@ -48,7 +51,8 @@ static void on_gamepad_movement_vertical() noexcept {
     float &a = movement_info.custom_look_horizontal;
     float &b = movement_info.custom_look_vertical;
     float &c = movement_info.aim_horizontal;
-    if(fabs(a) >= deadzone || fabs(b) > deadzone || fabs(c) > deadzone) {
+    if(fabs(a) >= deadzone || fabs(b) > deadzone || fabs(c) > deadzone)
+    {
         m = b;
         if(gamepad_being_used != 1) enable_magnetism_fix();
         gamepad_being_used = 1;
@@ -69,7 +73,8 @@ void fix_magnetism() noexcept {
     enabled_before = **reinterpret_cast<char **>(get_signature("player_magnetism_enabled_sig").address() + 1) == 1;
     enable_magnetism_fix();
 
-    const unsigned char fstp_then_call[] {
+    const unsigned char fstp_then_call[]
+    {
         // fstp dword ptr - 0x0
         0xD9, 0x1D, 0x00, 0x00, 0x00, 0x00,
 
@@ -151,16 +156,19 @@ void fix_magnetism() noexcept {
     VirtualProtect(on_mouse_horizontal_addr2, 6, old_protect, &old_protect_b);
 }
 
-
 ChimeraCommandError aim_assist_command(size_t argc, const char **argv) noexcept {
     static bool active = true;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value != active) {
-            if(new_value) {
+        if(new_value != active)
+        {
+            if(new_value)
+            {
                 fix_magnetism();
             }
-            else {
+            else
+            {
                 **reinterpret_cast<char **>(get_signature("player_magnetism_enabled_sig").address() + 1) = enabled_before ? 1 : 0;
                 get_signature("gamepad_horizontal_0_sig").undo();
                 get_signature("gamepad_vertical_0_sig").undo();
