@@ -86,29 +86,37 @@ static void do_interpolation(uint32_t i) noexcept {
     auto *pdata = HaloPlayer().player_data();
     auto *p_object_data = player_object.object_data();
 
-    if(p_object_data) {
+    if(p_object_data)
+    {
         auto &invehi = *reinterpret_cast<int8_t *>(p_object_data + 0x2F0);
-        if(chimera_interpolate_predict == 3) {
-            if(invehi != -1) {
+        if(chimera_interpolate_predict == 3)
+        {
+            if(invehi != -1)
+            {
               interpolate_vector_objects = interpolate_vector;
             }
-            else {
+            else
+            {
               interpolate_vector_objects = interpolate_vector_predict;
             }
         }
     }
 
-    if(nuked) {
+    if(nuked)
+    {
         objects_buffer_0[i].interpolation_type = INTERPOLATION_NONE;
         if(data) objects_buffer_0[i].tag_id = reinterpret_cast<BaseHaloObject *>(data)->tag_id;
-        if(objects_buffer_0[i].tag_id != objects_buffer_1[i].tag_id) {
+        if(objects_buffer_0[i].tag_id != objects_buffer_1[i].tag_id)
+        {
             objects_buffer_1[i].interpolation_type = INTERPOLATION_NONE;
         }
     }
-    if(data) {
+    if(data)
+    {
         auto &object = *reinterpret_cast<BaseHaloObject *>(data);
         const auto &type = object.object_type;
-        if(type > 8 || (object.phased_out && type != 5)) {
+        if(type > 8 || (object.phased_out && type != 5))
+        {
             return;
         };
         auto ld = ilevels[chimera_interpolate_setting][type];
@@ -126,9 +134,12 @@ static void do_interpolation(uint32_t i) noexcept {
         auto &position_center = object.position_script;
         objects_buffer_0[i].position_center = position_center;
 
-        if(nuked) {
-            if(type <= 3) {
-                if(distance_squared(objects_buffer_0[i].position_center, objects_buffer_1[i].position_center) > 1.5) {
+        if(nuked)
+        {
+            if(type <= 3)
+            {
+                if(distance_squared(objects_buffer_0[i].position_center, objects_buffer_1[i].position_center) > 1.5)
+                {
                     objects_buffer_0[i].interpolation_type = INTERPOLATION_NONE;
                     return;
                 }
@@ -136,15 +147,19 @@ static void do_interpolation(uint32_t i) noexcept {
 
             auto r = INTERPOLATION_NONE;
 
-            if(chimera_interpolate_setting == 9) {
+            if(chimera_interpolate_setting == 9)
+            {
                 r = INTERPOLATION_POSITION_ROTATION;
             }
-            else {
+            else
+            {
                 float adjusted_scale = distance(objects_buffer_0[i].position_center, camera_data().position)/zoom_scale();
-                if(ld == 1) {
+                if(ld == 1)
+                {
                     if(adjusted_scale < 20.0) r = INTERPOLATION_POSITION;
                 }
-                else if(ld == 2) {
+                else if(ld == 2)
+                {
                     if(adjusted_scale < 15.0) r = INTERPOLATION_POSITION_ROTATION;
                     else if(adjusted_scale < 70.0) r = INTERPOLATION_POSITION;
                 }
@@ -159,13 +174,16 @@ static void do_interpolation(uint32_t i) noexcept {
         if(objects_buffer_1[i].interpolation_type != INTERPOLATION_NONE)
             interpolate_vector_objects(objects_buffer_1[i].position_center, objects_buffer_0[i].position_center, position_center, interpolation_tick_progress);
 
-        for(uint32_t x=0;x<node_count;x++) {
+        for(uint32_t x=0;x<node_count;x++)
+        {
             objects_buffer_0[i].nodes[x] = nodes[x];
-            if(objects_buffer_1[i].interpolation_type != INTERPOLATION_NONE) {
+            if(objects_buffer_1[i].interpolation_type != INTERPOLATION_NONE)
+            {
                 interpolate_vector_objects(objects_buffer_1[i].nodes[x].position, objects_buffer_0[i].nodes[x].position, nodes[x].position, interpolation_tick_progress);
                 nodes[x].scale = objects_buffer_1[i].nodes[x].scale + (objects_buffer_0[i].nodes[x].scale - objects_buffer_1[i].nodes[x].scale) * interpolation_tick_progress;
 
-                if(objects_buffer_0[i].interpolation_type == INTERPOLATION_POSITION_ROTATION) {
+                if(objects_buffer_0[i].interpolation_type == INTERPOLATION_POSITION_ROTATION)
+                {
                     Quaternion before = objects_buffer_1[i].nodes[x].rotation;
                     Quaternion after = objects_buffer_0[i].nodes[x].rotation;
                     Quaternion out;
@@ -184,11 +202,13 @@ static event_no_args nav_point_address;
 static void interpolate_objects() noexcept {
     if(tick_count() == 0) return;
 
-    for(uint32_t t=0;t<2048;t++) {
+    for(uint32_t t=0;t<2048;t++)
+    {
         do_interpolation(t);
     }
 
-    if(nuked) {
+    if(nuked)
+    {
         buffer_widgets_l();
     }
 
@@ -215,7 +235,8 @@ static short* current_bsp_index = nullptr;
 static short previous_bsp_index = -1;
 
 static void compare_bsp_index() noexcept {
-    if (*current_bsp_index != previous_bsp_index) {
+    if (*current_bsp_index != previous_bsp_index)
+    {
         reset();
     }
     previous_bsp_index = *current_bsp_index;
@@ -224,10 +245,12 @@ static void compare_bsp_index() noexcept {
 static void rollback_interpolation() noexcept {
     if(tick_count() == 0) return;
     if(chimera_interpolate_setting >= 1) rollback_widget_interpolation();
-    for(uint32_t i=0;i<2048;i++) {
+    for(uint32_t i=0;i<2048;i++)
+    {
         HaloObject o(i);
         auto *data = o.object_data();
-        if(objects_buffer_0[i].interpolation_type != INTERPOLATION_NONE && objects_buffer_1[i].interpolation_type != INTERPOLATION_NONE && data) {
+        if(objects_buffer_0[i].interpolation_type != INTERPOLATION_NONE && objects_buffer_1[i].interpolation_type != INTERPOLATION_NONE && data)
+        {
             const auto &type = *reinterpret_cast<uint8_t *>(data + 0xB4);
             if((*reinterpret_cast<uint32_t *>(data + 0x10) & 1) && type != 5) continue;
 
@@ -242,7 +265,8 @@ static void rollback_interpolation() noexcept {
 
             *reinterpret_cast<Vector3D *>(data + 0xA0) = objects_buffer_0[i].position_center;
 
-            for(uint32_t x=0;x<node_count;x++) {
+            for(uint32_t x=0;x<node_count;x++)
+            {
                 nodes[x] = objects_buffer_0[i].nodes[x];
             }
         }
@@ -251,7 +275,8 @@ static void rollback_interpolation() noexcept {
 
 ChimeraCommandError interpolate_command(size_t argc, const char **argv) noexcept {
     static bool use_text = true;
-    if(argc != 0) {
+    if(argc != 0)
+    {
         auto &camera_coord_s = get_signature("camera_coord_sig");
         auto &camera_tick_rate_s = get_signature("camera_tick_rate_sig");
         auto &camera_change_s = get_signature("camera_change_sig");
@@ -263,42 +288,51 @@ ChimeraCommandError interpolate_command(size_t argc, const char **argv) noexcept
         static bool initialized = false;
 
         std::string arg = argv[0];
-        for(size_t i=0;i<arg.size();i++) {
+        for(size_t i=0;i<arg.size();i++)
+        {
             arg[i] = tolower(arg[i]);
         }
 
         size_t new_setting = atol(argv[0]);
 
-        if(arg == "off" || arg == "0" || arg == "false") {
+        if(arg == "off" || arg == "0" || arg == "false")
+        {
             new_setting = 0;
             use_text = true;
         }
-        else if(arg == "low") {
+        else if(arg == "low")
+        {
             new_setting = 3;
             use_text = true;
         }
-        else if(arg == "medium" || arg == "med" || arg == "true" || arg == "on") {
+        else if(arg == "medium" || arg == "med" || arg == "true" || arg == "on")
+        {
             new_setting = 6;
             use_text = true;
         }
-        else if(arg == "high") {
+        else if(arg == "high")
+        {
             new_setting = 8;
             use_text = true;
         }
-        else if(arg == "ultra") {
+        else if(arg == "ultra")
+        {
             new_setting = 9;
             use_text = true;
         }
-        else if(new_setting > 9 || new_setting == 0) {
+        else if(new_setting > 9 || new_setting == 0)
+        {
             char z[256] = {};
             sprintf(z,"chimera_interpolate: Invalid setting \"%s\". Use \"chimera interpolate\" for help.",argv[0]);
             console_out_error(z);
             return CHIMERA_COMMAND_ERROR_FAILURE;
         }
-        else {
+        else
+        {
             use_text = false;
         }
-        if(initialized && new_setting == 0) {
+        if(initialized && new_setting == 0)
+        {
             camera_coord_s.undo();
             camera_tick_rate_s.undo();
             fp_interp_s.undo();
@@ -312,7 +346,8 @@ ChimeraCommandError interpolate_command(size_t argc, const char **argv) noexcept
             remove_frame_event(rollback_interpolation);
             initialized = false;
         }
-        else if(!initialized && new_setting != 0) {
+        else if(!initialized && new_setting != 0)
+        {
             memset(objects_buffer_0,0,sizeof(objects_buffer_0));
             memset(objects_buffer_1,0,sizeof(objects_buffer_1));
 
@@ -351,9 +386,11 @@ ChimeraCommandError interpolate_command(size_t argc, const char **argv) noexcept
         }
         chimera_interpolate_setting = new_setting;
     }
-    if(use_text) {
+    if(use_text)
+    {
         const char *what;
-        switch(chimera_interpolate_setting) {
+        switch(chimera_interpolate_setting)
+        {
         case 0:
             what = "off";
             break;
@@ -375,17 +412,21 @@ ChimeraCommandError interpolate_command(size_t argc, const char **argv) noexcept
         }
         console_out(what);
     }
-    else {
+    else
+    {
         console_out(std::to_string(chimera_interpolate_setting));
     }
     return CHIMERA_COMMAND_ERROR_SUCCESS;
 }
 
 ChimeraCommandError interpolate_predict_command(size_t argc, const char **argv) noexcept {
-    if(argc != 0) {
+    if(argc != 0)
+    {
         auto new_value = atol(argv[0]);
-        if(new_value != chimera_interpolate_predict) {
-            switch(new_value) {
+        if(new_value != chimera_interpolate_predict)
+        {
+            switch(new_value)
+            {
                 case 0:
                     interpolate_vector_objects = interpolate_vector;
                     break;
@@ -394,7 +435,8 @@ ChimeraCommandError interpolate_predict_command(size_t argc, const char **argv) 
                 case 3:
                     interpolate_vector_objects = interpolate_vector_predict;
                     break;
-                default: {
+                default:
+                {
                     console_out_error("Expected a value between 0 and 3.");
                     return CHIMERA_COMMAND_ERROR_FAILURE;
                 }
