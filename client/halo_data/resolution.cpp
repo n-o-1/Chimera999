@@ -90,7 +90,8 @@ static void set_resolution(int width, int height, int refresh_rate=1000, int vsy
     const short nope[] = {0x90, 0x90, 0x90, 0x90, 0x90};
     write_code(block_resolution_change, nope, 5);
 
-    if(repeat && !repeating) {
+    if(repeat && !repeating)
+    {
         repeating = true;
         set_resolution(width, height, refresh_rate, vsync, 1);
         set_resolution(width, height, refresh_rate, vsync, 0);
@@ -102,9 +103,11 @@ static void set_resolution(int width, int height, int refresh_rate=1000, int vsy
 /// Function for command chimera_set_resolution
 ChimeraCommandError block_vsync_command(size_t argc, const char **argv) noexcept {
     static bool active = false;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value) {
+        if(new_value)
+        {
             auto &resolution = get_resolution();
             set_resolution(resolution.width, resolution.height, 1000, 0);
         }
@@ -118,22 +121,26 @@ ChimeraCommandError block_vsync_command(size_t argc, const char **argv) noexcept
 ChimeraCommandError set_resolution_command(size_t argc, const char **argv) noexcept {
     int width = strtol(argv[0], nullptr, 10);
     int height = strtol(argv[1], nullptr, 10);
-    if(width < 32 && height < 32 && width > 0 && height > 0) {
+    if(width < 32 && height < 32 && width > 0 && height > 0)
+    {
         auto &resolution = get_resolution();
         auto width_f = strtod(argv[0], nullptr);
         auto height_f = strtod(argv[1], nullptr);
         height = static_cast<double>(resolution.width) / width_f * height_f;
         width = resolution.width;
-        if(width < 640) {
+        if(width < 640)
+        {
             height = 640.0 / width_f * height_f;
             width = 640;
         }
-        if(height < 480) {
+        if(height < 480)
+        {
             height = 480;
             width = 480.0 * width_f / height_f;
         }
     }
-    if(width < 640 || height < 480) {
+    if(width < 640 || height < 480)
+    {
         console_out_error("A resolution of at least 640 pixels wide by 480 pixels high is required.");
         return CHIMERA_COMMAND_ERROR_FAILURE;
     }
