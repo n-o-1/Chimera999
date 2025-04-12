@@ -17,26 +17,33 @@ void set_block_letterbox(bool do_it) noexcept {
 
     letterbox = *reinterpret_cast<float ***>(get_signature("letterbox_sig").address() + 2);
 
-    if(count == 1) {
+    if(count == 1)
+    {
         add_tick_event(block_letterbox);
     }
-    else if(count == 0) {
+    else if(count == 0)
+    {
         remove_tick_event(block_letterbox);
     }
-    else if(count == -1) {
+    else if(count == -1)
+    {
         std::terminate();
     }
 }
 
 ChimeraCommandError block_letterbox_command(size_t argc, const char **argv) noexcept {
     static auto active = false;
-    if(argc == 1) {
+    if(argc == 1)
+    {
         bool new_value = bool_value(argv[0]);
-        if(new_value != active) {
-            if(new_value) {
+        if(new_value != active)
+        {
+            if(new_value)
+            {
                 set_block_letterbox(true);
             }
-            else {
+            else
+            {
                 set_block_letterbox(false);
             }
             active = new_value;
