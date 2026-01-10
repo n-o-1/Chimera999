@@ -205,7 +205,6 @@ These commands give a description of available Hac2 commands and their usage.
 
 This is Chimera’s flagship feature. It smoothes out object movement at higher framerates, increasing the game’s fluidity.
 
-* `chimera_widescreen_scope_fix [true/false]` - Enhance an existing widescreen fix by also fixing the scope mask if it's not fixed.
 * `chimera_interpolate_predict [0/1/2/3]` - Get or set whether the next tick should be predicted when interpolating. This will prevent objects from appearing as if they are one tick behind, but sudden object movement may cause jitteriness.
 	* `0` Off
 	*	`1` On
