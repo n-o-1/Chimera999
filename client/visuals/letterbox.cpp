@@ -1,5 +1,6 @@
 #include "letterbox.h"
 
+#include <exception>
 #include "../client_signature.h"
 #include "../hooks/tick.h"
 #include "../messaging/messaging.h"

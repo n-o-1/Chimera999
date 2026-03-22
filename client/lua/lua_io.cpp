@@ -1,5 +1,6 @@
 #include "lua_io.h"
 
+#include <cstdint>
 #include <string.h>
 #include <windows.h>
 

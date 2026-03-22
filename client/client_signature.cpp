@@ -1,5 +1,8 @@
 #include "client_signature.h"
 
+#include <cstring>
+#include <exception>
+
 void BasicCodecave::call_virtual_protect() noexcept {
     DWORD old;
     VirtualProtect(this->data, sizeof(this->data), PAGE_EXECUTE_READWRITE, &old);
@@ -79,6 +82,25 @@ void write_jmp_call(void *call_instruction, void *before_function, void *after_f
     *reinterpret_cast<int *>(call_instruction_char + 1) = reinterpret_cast<int>(&codecave.data) - call_instruction_end;
 
     VirtualProtect(call_instruction, 32, prota, &protb);
+}
+
+void replace_call_destination(void *call_instruction, void *new_destination, int nops)
+{
+    unsigned char* call_site = reinterpret_cast<unsigned char*>(call_instruction);
+    if (*call_site != 0xE8)
+    {
+        std::terminate();
+    }
+
+    std::uint32_t call_offset = static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(new_destination) - reinterpret_cast<std::uintptr_t>(call_instruction)) - 5;
+    unsigned char patch_bytes[5] = {0xE8,};
+    std::memcpy(patch_bytes + 1, &call_offset, sizeof(call_offset));
+
+    DWORD old_protect;
+    VirtualProtect(call_instruction, sizeof(patch_bytes), PAGE_READWRITE, &old_protect);
+    std::memcpy(call_site, patch_bytes, sizeof(patch_bytes));
+    std::memset(call_site + sizeof(patch_bytes), 0x90, nops);
+    VirtualProtect(call_instruction, sizeof(patch_bytes), old_protect, &old_protect);
 }
 
 std::vector<ChimeraSignature> *signatures = nullptr;
@@ -744,8 +766,11 @@ bool find_hide_server_ip_sigs() noexcept {
     const short join_server_ip_text_sig[] = { 0xB8, -1, -1, -1, -1, 0xE8, -1, -1, -1, -1, 0x8B, 0x84, 0x24, 0x28, 0x01, 0x00, 0x00, 0x50 };
     add_signature_s2(join_server_ip_text_sig);
 
-    const short f1_ip_text_render_call_sig[] = { 0xE8, -1, -1, -1, -1, 0x83, 0xC4, 0x0C, 0x5F, 0x5E, 0x5D, 0x5B, 0x81, 0xC4, 0xE0, 0x06, 0x00, 0x00, 0xC3 };
-    add_signature_s2(f1_ip_text_render_call_sig);
+    const short swprintf_server_ip_long_sig[] = {0x68, -1, -1, -1, -1, 0x52, 0xBA, 0x00, 0x02, 0x00, 0x00, 0xE8, -1, -1, -1, -1, 0x83, 0xC4, 0x14};
+    add_signature_s2(swprintf_server_ip_long_sig);
+
+    const short swprintf_server_ip_short_sig[] = {0x68, -1, -1, -1, -1, 0x51, 0xBA, 0x00, 0x02, 0x00, 0x00, 0xE8, -1, -1, -1, -1, 0x83, 0xC4, 0x10};
+    add_signature_s2(swprintf_server_ip_short_sig);
 
     const short create_server_ip_text_sig[] = { 0x8B, 0x0D, -1, -1, -1, -1, 0x8B, 0xC1, 0xC1, 0xE0, 0x10, 0x81, 0xE1, 0x00, 0xFF, 0x00, 0x00, 0x0B, 0xC1, 0x66, 0x8B, 0x0D, -1, -1, -1, -1, 0x33, 0xD2, 0x8A, 0xF1, 0xC1, 0xE0, 0x08, 0x0F, 0xB6, 0xCD, 0x0B, 0xC2, 0x0B, 0xC1, 0x50, 0xFF, 0x15, -1, -1, -1, -1, 0x8B, 0xC8, 0x8D, 0x70, 0x01, 0x8D, 0x49, 0x00, 0x8A, 0x10 };
     add_signature_s2(create_server_ip_text_sig);

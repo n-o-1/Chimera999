@@ -10,6 +10,7 @@ public:
     BasicCodecave(const BasicCodecave &other) noexcept;
 };
 void write_jmp_call(void *call_instruction, void *before_function, void *after_function, BasicCodecave &codecave) noexcept;
+void replace_call_destination(void *call_instruction, void *new_destination, int nops = 0);
 
 #include "../code_injection/signature.h"
 ChimeraSignature &get_signature(const char *name) noexcept;

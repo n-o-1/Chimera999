@@ -1,5 +1,6 @@
 #include "widescreen_fix.h"
 
+#include <exception>
 #include <math.h>
 #include <string.h>
 #include "../client_signature.h"
